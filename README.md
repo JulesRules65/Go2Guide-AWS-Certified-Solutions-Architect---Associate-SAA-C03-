@@ -4,6 +4,7 @@ Explore the ultimate companion for achieving your AWS Certified Solutions Archit
 I'd like to start with some motivation: [Don't Shave That Yak!](https://seths.blog/2005/03/dont_shave_that/)
 Don't give up when you don't understand a concept perfectly .. remember, doing it well now is much better than doing it perfectly later.
 
+
 ## Where to study
 Udemy Course ($$$):
 https://nttdata.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03
@@ -59,6 +60,7 @@ https://aws.amazon.com/premiumsupport/plans
 
 
 ## Exam Tips
+
 ### AWS Fundamentals
 #### Building Blocks of AWS
 - **A Region** is a physical location in the world that consists of two or more Availability Zones (AZs)
@@ -307,7 +309,100 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
 - **AWS Outpost servers**
   - for smaller deployments, so this will be things like putting in a 1U server inside a retail shop, for example.
 
-### Elastic Block Storage (EBS) and Elastic File System (EFS)
+### Elastic Block Storage (EBS)
+#### SSD Volumes
+- gp2: General purpose SSD
+  - for boot disks and general applications
+  - up to 16.000 IOPS per volume
+  - 
+- gp3: Provisioned IOPS SSD
+  - for high performance applications
+  - predictable 3.000 IOPS baseline performance and 125 MiB/s regardless of volume size
+- io1: Provisioned IOPS SSD
+  - for OLTP and latency-sensitive applications
+  - 50 IOPS/GiB
+  - up to 64.000 IOPS per volume
+  - high performance and most expensive
+- io2: Provisioned IOPS SSD
+  - for OLTP and latency-sensitive applications
+  - 500 IOPS/GiB
+  - up to 64.000 IOPS per volume
+  - high performance and most expensive
+
+#### HDD Volumes
+- st1: Throughput Optimized HDD
+  - for big data, data warehouse, ETL
+  - max throughput is 500 MB/s per volume
+  - not a boot volume
+- sc1: Cold HDD
+  - for less frequently accessed data
+  - max throughput of 250 MB/s per volume
+  - not a boot volume
+  - lowest cost
+
+#### Volumes and Snapshots
+- Volumes exist on EBS, whereas snapshots are stored in S3 Buckets
+- Snapshots are point-in-time photographs of volumes and are incremental in nature
+- Snapshots will take some time to create - for consistent snapshots, stop the instance and detach the volume
+- Snapshots can be shared between AWS accounts as well as between regions - first you need to copy that snapshot to the target region
+- Resize EBS Volumes on the fly as well as changing the volume types
+
+#### Amazon Machine Images (AMI): EBS vs. Instance Store
+- An AMI is just a blueprint for an EC2 instance
+- Instance store volumes are sometimes called ephemeral/short-lived storage
+- Instance store volumes cannot be stopped. If underlying host fails you will loose your data
+- EBS-backed instances can be stoppped. You will not loose data
+- both EBS and instance store can be rebooted without loosing data
+- By default both root volumes will be deleted on termination
+  - with EBS volumes you can tell AWS to keep the root device volume
+
+#### Protecting EBS Volumes with encryption
+- **Data at rest** is encrypted inside the volume
+- All snapshots are encrypted
+- All the data **in flight** moving between the instance and the volume is encrypted
+- All volumes created from the snapshot are encrypted
+- To encrypt volumes:
+  - **Create a snapshot** of the uncrypted root device volume
+  - **Create a copy** of the snapshot and select the encrypt option
+  - **Create an AMI** from the encrypted snapshot
+  - Use that AMI to **launch new encrypted instances**
+
+#### EC2 Hibernation
+- Preserves the in-memory RAM on persistent storage (EBS)
+- **Much faster to boot up** because you do not need to reload the operating system
+- Instance RAM must be less than 150 GB
+- Instance families include C3, C4, C5, M3, M4, M5, R3, R4 and R5
+- Available for Windows, Amazon Linux 2 AMI, and Ubuntu
+- Instances can't be hibernated for more than **60 days**
+- Available for On-Demand instances and Reserved Instances
+
+
+### Elastic File System (EFS)
+Highly scalable shared storage using Network File Sharing. Distributed, highly resilient storage for Linux instances and Linux-based applications
+- Supports the Network File System version 4 (NFSv4) protocol
+- Only pay for the storage you use (no pre-provisioning required)
+- Can scale up to petabytes
+- Can support thousands of concurrent NFS connections
+- Data is stored across multiple AZs within a region
+- Read-after-write consistency
+
+#### FSx
+- Amazon FSx for Windows: When you need centralized storage for Windows-based applications, such as SharePoint, Microsoft SQL Server, Workspaces or any other native Microsoft application
+- Amazon FSx for Lustre: When you need high-speed, high-capacity distributed storage. For applications that do high performance computing (HPC), financial modeling, etc. Remember that FSx for Lustre can store data directly on S3
+
+### Comparing all Storage Options
+- S3: Used for serverless object storage
+- Glacier: Used for archiving objects
+- EFS: Network File System for Linux instances. Centralized storage solution across multiple Azs
+- EBS Volumes: Persistent storage for EC2 instances
+- Instance Store: Ephemeral storage for EC2 instances
+- FSx for Windows: For Windows Instances - centralized storage solution across multiple AZs
+- FSx for Lustre: File storage for high perfromance computing Linux file systems
+
+### AWS Backup
+- Consolidation: Use AWS Backup to back up AWS services such as EC2, EBS, EFS, Amazon FSx for Lustre, Amazon FSx for Windows File Server, and AWS Storage Gateway
+- Organizations: You can use AWS Organizations in conjunction with AWS Backup to back up your different AWS services across multiple AWS accounts
+- Benefits: Backup gives you centralized control, letting you automate your backups and define lifecycle policies for your data. You get better compliance, as you can enforce your backup policies, ensure your backups are encrypted, and audit them once complete
 
 
 ### Databases
