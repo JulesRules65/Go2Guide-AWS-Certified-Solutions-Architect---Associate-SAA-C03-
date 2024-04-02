@@ -1,6 +1,9 @@
 # Go2Guide-AWS-Certified-Solutions-Architect--Associate-SAA-C03
 Explore the ultimate companion for achieving your AWS Certified Solutions Architect Certification. This comprehensive guide is your go-to resource, meticulously curated with vital links to whitepapers, essential services, and handy cheat sheets tailored to each exam topic. Additionally, uncover invaluable exam tips meticulously crafted for mastering each service with confidence.
 
+I'd like to start with some motivation: [Don't Shave That Yak!](https://seths.blog/2005/03/dont_shave_that/)
+Don't give up when you don't understand a concept perfectly .. remember, doing it well now is much better than doing it perfectly later.
+
 ## Where to study
 Udemy Course ($$$):
 https://nttdata.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03
