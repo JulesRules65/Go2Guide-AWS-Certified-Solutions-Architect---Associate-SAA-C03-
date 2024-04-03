@@ -220,6 +220,7 @@ EC2 is like a VM, hosted in AWS instead of your own data center
 - Reserved capacity for 1 **or** 3 years
 - Up to 72% discount on the hourly charge.
 - Great if you have known, fixed requirements
+- to stop incurring charges and save money on the EC2 instances you can sell the reserved instances on the Reserved Instance Marketplace.
 
 **Dedicated Host**
 - Most expensive option
@@ -406,18 +407,268 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 
 
 ### Databases
+#### Relational Database Service (RDS)
+- **Database Types:** SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, and Amazon Aurora
+- RDS is for online transaction processing workloads: small transactions, like customer orders, banking transactions, booking systems
+- RDS is not suitable for online analytics processing: better use Redshift for tasks like analyzing large amounts of data
+
+#### Read Replicas
+- **Scaling read performance:** used for scaling and not for disaster recovery
+- **Requires automatic backup:** automatic backup must be anabled in order to deploy a read replica
+- **Multiple read replicas supported:** 5 read replicas for each DB instance allowed (MySQL, MariaDB, PostgreSQL, Oracle, SQL Server)
+
+#### Multi-AZ vs. Read Replicas
+- Multi-AZ
+  - Exact copy of your production database in another AZ
+  - Used for disaster recovery
+  - In the event of a failure, RDS will automatically failover to the standby instance
+- Read Replica
+  - A read only copy of your primary database in the same AZ, cross AZ or cross region
+  - Used to increase or scale read performance
+  - Great for read heavy workloads and takes the load off your primary database
+
+#### Amazon Auroroa
+- Compatible with MySQL, PostgreSQL
+- 2 copies of your data are contained in each AZ, with a minimum of 3 AZs >> 6 copies of your data
+- Share Aurora snapshots with other aws accounts
+- 3 types or read replicas: Aurora replicas (automated failover available), MySQL replicas, and PostgreSQL replicas
+- Aurora has automated backups turned on by default.
+
+##### Auroroa Serverless
+- Provides a relatively, simple, cost-effective option for infrequent, intermittent, or unpredictable workloads
+- Think of Aurora Serverless in a scenario question where it's talking about setting up a serverless database
+
+#### DynamoDB
+- Stored on SSD storage
+- Spread across 3 geographically distinct data centers
+- Eventually consistent reads (default)
+- Strongly consistent reads
+- Difference between eventually & strongly
+  - Eventually: Consistency across all copies of data is usually reached within seconds. Best read perfromance
+  - Strongly: returns a result that reflects all writes that received a successful response prior to the read
+
+##### DynamoDB Transactions
+- Provides ACID across one or more tables within a single AWS account and region
+- Multiple "all-or-nothing" operations
+- Financial transactions
+- Fulfilling orders
+- 3 options for reads: eventual consistency, strong consistency, and transactional
+- 2 options for writes: standard and transactional
+- up to 100 actions per transaction or 4MB of data
+
+##### DynamoDB On-Demand Backup and Restore
+- Full backups at any time
+- Zero impact on table performance or availability
+- Consistent within seconds and retained until deleted
+- Operates within same region as the source table
+
+##### DynamoDB Point-in-time Recovery (PITR)
+- Protects against accidental writes or deletes
+- Restore to any point in the last 35 days
+- Incremental backup
+- Not enabled by default
+- Latest rstorable: 5 minutes in the past
+
+##### DynamoDB Streams
+- Time-ordered sequence of item-level changes in a table
+- Stored for 24 hours
+- Inserts, updates, and deletes
+- combine with lambda functions for functionality like stored procedures
+
+##### Global Tables (redundancy for DynamoDB)
+- Globally distributed applications
+- Based on DynamoDB streams (needs to be enabled before using global tables)
+- Multi-region redundancy for disaster recovery or high availability
+- No application rewrites
+- replication latency under one second
+
+#### Amazon DocumentDB
+- Is the MongoDB-compatible database
+- think Amazon DocumentDB when they talk about migrating MongoDB from on-premise to AWS
+
+#### AWS Keyspaces
+- For Cassandra cluster
+- think AWS Keyspaces when they talk about migrating a big data Cassandra cluster to AWS
+
+#### Neptune
+- Is a graph database
+- think Neptune when they talk about graph database
+
+#### Quantum ledger database
+- is a fully managed ledger database that provides a transparent, immutable, and cryptographically verifiable transaction log.
+
+#### Timestream
+- stores a large amount of time-series data for analysis
+- e.g. temperature sensors collecting temperature every second across thousands of locations
 
 
 ### Virtual Private Cloud (VPC) Networking
+- Think of a VPC as a logical data center
+- Consists of internet gateways, route tables, network access control lists, subnets, and security groups
+- 1 subnet is always in 1 AZ
+
+#### NAT Gateways
+- Redundant inside the AZ
+- Starts at 5 Gbps and scales currently to 45 Gbps
+- No need to patch
+- Not associated with Security Groups
+- Automatically assigned a public IP address
+- If resources in multiple Azs share a NAT gateway and one AZ is down, the respurces in the other AZ lose internet access
+  - solve problem: one NAT gateway for each AZ - configure routing to ensure resources use the NAT in the same AZ
+
+#### Security Groups
+- SG are statful - if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules
+  - responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules
+
+#### Network ACL
+- Default Network ACLs: coming automatically with VPC - by default all outbound and inbound traffic **is allowed**
+- Custom Network ACL: create custom network ACLs - by default all outbound and inbound traffic **is denied**
+- Subnet Associations: each subnet in VPC must be associated with a network ACL - if not the subnet will automatically use default network ACL
+- Block IP Addresses: Block IP addresses using network ACLs, not Security groups
+- You can associate a network ACL with multiple subnets; but a subnet with only one network ACL
+- network ACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule
+  - seperate inbound and outbound rules, each rule can either allow or deny traffic
+- Unlike SGs Network ACLs are stateless, responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa)
+
+#### Direct Connect
+- connects directly to your data center
+- useful for high-throughput workloads (e.g. lots of network traffic)
+- helpful when you need a stable and reliable secure connection
+
+#### VPC Endpoints
+- when you want to connect AWS services without leaving the Amazon internal network
+- 2 types of VPC endpoints: Interface endpoints and gateway endpoints
+- gateway endpoints: support s3 and DynamoDB
+
+#### VPC Peering
+- connect 1 VPC with another via a direct network route
+- instances behave as if they were on the same private network
+- peer VPC with other AWS accounts as well with other VPCs in the same account
+- peering is in a star configuration (e.g. 1 central VPC peers with 4 others)
+- you can peer between regions
+
+#### AWS PrivateLink
+- peering a vpc to hundreds, or thousands of customer VPCs
+- Doesn't require VPC peering, no route tables, NAT gateways, internet gateways etc.
+- Requires a Network Load Balancer on the service VPC and an ENI on the customer VPC
+
+#### AWS Transit Gateway
+- Simplifying network topology
+- Use route tables to limit how VPCs talk to one another
+- Works with Direct Connect as well as VPN connections
+- Supports IP multicast (not supported by any other service)
+
+#### VPN Hub
+- simplifying VPN network topology
+- Use this approach if you have multiple branch offices and existing internet connections and would like to implement a convenient, potentially low-cost hub-and-spoke model for primary or backup connectivity between these remote offices.
+
+#### AWS Wavelength
+- mobile edge computing
+- 5G, increasing application speed at edge using mobile networks
 
 
 ### Route 53
+- A reliable and cost-effective way to route end users to Internet applications
+- difference between alias record and a CNAME
+  - alias record: are unique to AWS. Translate your naked domain/subdomain name to a resource
+  - CNAME: only allows you to translate a sub domain name from one to another
+- always choose alias record over a CNAME when you see it in the exam
+
+#### DNS Record Types
+  - SOA Records
+  - CNAME Records
+  - NS Records
+  - A Records
+
+#### Routing Policies
+- Simple Routing
+  - you can only have one record with multiple IP addresses. And if you specify multiple values in a record, Route 53 returns all values to the user in a random order.
+  - not working with health checks
+- Weighted Routing
+  - If you see any scenario based questions that's talking about you want to direct a certain percentage of your traffic to a particular region or availability zone or whatever.
+- Latency-Based-Routing
+  - if you see an exam question that's talking about latency
+- Failover Routing
+  - active passive setup. So our active might be in us-west-1 or us-west-2. And our passive setup might be an ap-souteast-2.
+  - And essentially fail over routing will have a health check on each region.
+  - And if we lose a region, it will switch from our active site to our passive site automatically.
+- Geolocation Routing
+  - how can you make sure that a group of users in a particular location only go to a group of web servers in a particular location.
+- Geoproximity Routing
+  - This basically lets Amazon Route 53 route your traffic to resources based on the geographic location of your users and resources.
+  - And to use geo proximity routing you must be using Route 53 Traffic Flow. Traffic Flow was that GUI where we can do all kinds of complicated routing architectures with Route 53.
+- Multivalue Answer Routing
+
+#### Registering a Domain Name
+- you can buy domain names directly with AWS
+- can take up to 3 days to register
+
+#### Health Checks
+- You can set health checks on individual record sets
+- If a record set fails a health check, it will be removed from route 53 unitl it passes the health check
+- You can set SNS notifications to alert you about failed health checks
 
 
 ### Elastic Load Balencing (ELB)
+You can use health checks to route your traffic to instances or targets that are healthy
+
+#### Application Load Balancer
+- Layer 7
+- intelligent load balencing
+- Listeners: checks for connection requests from clients using the protocol and port you configure
+- Rules: Determine how the load balancer routes requests to its registered targets. Consists of a priority, one or more actions, and one or more conditions
+- Target Groups: each target group routes requests to one or more registered targets, such as EC2 instances, using the protocol and port number you specify
+- Limitations: Application Load Balancers only support HTTP and HTTPS
+- HTTPS: To use HTTPS listener, you must deploy at least one SSL/TLS server certificate. 
+
+#### Network Load Balancer
+- Layer 4
+- use where you need extreme performance
+- other use cases are where you need protocols not supported by ALB
+- decrypt traffic, but you will need to install the certificate on the load balancer
+
+#### Gateway Load Balancer
+- Layer 3
+- for inline virtual appliances
+
+#### Classic Load Balancer
+- Layer 4/7
+- mostly used for test and dev
+- 504 error means the gateway has timed out
+- IPv4 address >> look for the X-Forwarded-For header
+
+#### Sticky Sessions
+- enable your users to stick to the same EC2 instance. Useful when storing information locally.
+- scenario-based question: you remove an EC2 instance from a pool. but the load balancer continues to direct traffic to that EC2 instance
+  - solve this by disabling sticky sessions
+- sticky sessions can be enabled for ALB as well but the traffic will be sent atthe target group level
+
+#### Deregistration Delay/Connection Draining
+- Enable Deregistration Delay
+  - Keep existing connections open if the EC2 instance becomes unhealthy
+- Disable Deregistration Delay
+  - Do this if you want your LB to immediately close connections to the instances that are de.registering or have become unhealthy
 
 
 ### Monitoring
+#### Cloud Watch
+- is the main tool for anything alarm related
+- Not everything should go through CloudWatch
+- Know your intervals
+  - standard metric is delivered every five minutes
+  - detailed monitoring delivers data every one minute
+
+#### CloudWatch Logs
+- is the place for logs. EC2, on-premise, RDS, Lambda and CloudTrail can all integrate with this service
+- SQL and Logs >> CloudwatchLogs Insights
+- Real time means Kinesis (big data section) >> dont pick CloudWatch Logs if it asks for a real-time logging service
+
+#### Visualizing Data and Monitoring Containers at Scale
+- Grafana: might be the best for visualization of container metrics
+  - AWS-managed service for correlation and visualization of container or IoT metrics
+- Amazon Managed Service for Prometheus
+  - use this service for any Kubernetes-based metrics monitoring at scale. Can be Amazon EKS cluster or self-managed cluster
+- Both are managed services >> AWS handles scaling and high availability for you
 
 
 ### High Availability and Scaling
@@ -449,6 +700,9 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 
 ### Front-End Web and Mobile
 
+
 ### Machine Learning
+
+
 
 ### Media
