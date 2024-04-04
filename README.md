@@ -672,9 +672,60 @@ You can use health checks to route your traffic to instances or targets that are
 
 
 ### High Availability and Scaling
+#### Auto Scaling
+- is only for EC2
+  - No other service can be scaled using Auto Scaling
+- Whenever possible, favor solutions that are predictive rather than reactive
+- Avoid long provisioning times by putting everything in an AMI (all dependencies and code). This is better than using user data whenever possible.
+  - good when you need those instances to respond to a workload that has just hit your architecture
+- Make sure you're spreading your Auto Scaling groups over multiple AZs
+- Steady state groups: is an auto scaling group that has min, max, and desired capacity. e.g. min 1, max 1, desired capacity 1. when the instance fails then auto scaling will automatically recover that architecture and provide a new instance
+- Make sure you enable health checks from Load Balancers. If instances dont pass the health check they will be terminated by the auto scaling group. (that is not default behaviour)
+
+#### Scaling Databases
+- RDS has the most database scaling options
+- Horizontal scaling is usually preferred over vertical
+  - Read replicas are your friend >> especially for read-heavy workloads
+- DynamoDB scaling comes down to access patterns
+  - If we have that consistent access pattern, where it's predictable, where we gradually need to scale up and then scale those reads and writes back down, that's when we're going to want to select the auto scaling method.
+  - If we see a scenario given to us that has an unpredictable workload, where that access pattern spikes up and down and up and down, and we can't really predict what we need, then we want to pick that on-demand option.
 
 
 ### Decoupling Workflows
+#### Amazon SQS
+- **SQS** can duplicate messages >> check for misconfigured visibility timeouts
+- Queues aren't bi-directional: if you need communication to return to the instance that sent the message, you'll need a second queue
+- It's important to understand the standard values for all of the SQS settings
+- Messages stored in SQS can only persist **up to 14 days**
+- If message ordering is important, make sure to select SQS FIFO queues
+
+#### Amazon SNS
+- proactive notifications: any time a question asks about email, text, or any type of push-based notification, think of SNS
+- CloudWatch works perfectly with SNS: get notifications from a CloudWatch alarm via e-mail etc.
+
+#### API Gateway
+- no need for an in depth understanding
+- it acts as a secure front door to external communication coming into your environment
+
+#### AWS Batch
+- For long running, batched workloads: anything related to batch workloads that is > 15 minutes will likely involve AWS Batch
+- Queued workloads: for any question about batch workloads requiring queues
+- On-demand alternative to AWS Lambda: questions regarding an alternative solution to AWS Lambda due to runtime requirements
+
+#### Amazon MQ
+- Managed messaging broker: if there is any mention of a managed broker service
+- RabbitMQ or ActiveMQ: when these two technologies are mentioned >> think Amazon MQ
+- Specific messaging protocols: JMS, AMQP 0-9-1, AMQP 1.0, MQTT, OpenWire, or STOMP >> think Amazon MQ
+
+#### Step Functions
+- Serverless orchestration service
+- Whenever the solution requires different states or logic during workflows (e.g. condition checks, failure catches, wait periods) >> Step Functions
+
+Amazon App Flow
+- AppFlow offers a fully managed service for easily automating the exchange of data between SaaS vendors and AWS services like Amazon S3. 
+- You can transfer up to 100 gibibytes per flow
+- Bi-directional: can be bi-directional in certain use cases (into or out of AWS services)
+- good option to avoid the lambda timeouts (max execution timeout 15 min)
 
 
 ### Big Data
