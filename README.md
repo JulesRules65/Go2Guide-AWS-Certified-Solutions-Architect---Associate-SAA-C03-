@@ -729,7 +729,51 @@ Amazon App Flow
 
 
 ### Big Data
+#### Redshift
+- Redshift is a relational database, but no replacement for RDS in traditional applications.
+- Meant for large scale data warehousing and data analytics
+- supports single-AZ and multi-AZs
 
+#### Amazon Elastic MapReduce (Amazon EMR)
+- managed cluster platform that simplifies running big data frameworks, such as Apache Hadoop and Apache Spark
+- EMR also lets you transform and move large amounts of data into and out of other AWS data stores and databases, such as Amazon S3 and Amazon DynamoDB.
+- is made up of EC2 instances: you can employ your standard EC2 instance cost-saving measures
+- offers several built-in open-source tools to process vast amounts of big data
+
+#### Kinesis
+- only service with real-time response
+- SQS and Kinesis can both be queues.
+  - SQS is easier and simpler
+  - Kinesis is faster and can store data for up to a year
+- understand the difference between Data Firehose and Data Streams
+  - Data Firehose >> near realtime
+  - Data Streams >> real-time
+
+#### Athena & Glue
+- Athena: Serverless SQL.
+  - makes it easy to analyze data directly in S3
+  - build dashboards and visualizations for business intelligence needs using QuickSight
+- Glue: serverless ETL (Extract, transform, and load) service - can help create that schema for your data when paired with Athena
+  - discover and connect to more than 70 diverse data sources and manage your data in a centralized data catalog
+
+#### Quicksight
+- QuickSight is your go-to tool for visualizing data
+
+#### OpenSearch (ElasticSearch)
+- OpenSearch is primarily used for analyzing log files and various documents, especially within an ETL process
+
+#### Data Pipeline
+- is a managed ETL service within AWS
+- implement automated workflows for movement and transformation of your data
+- integrates with storage services and compute services
+- Data-driven and task-dependent ETL workloads are a perfect use case
+
+#### Amazon Managed Streaming for Apache Kafka (MSK)
+- Managed service for building and running Apache Kafka streaming applications
+- The service handles control plane operations for you (creation, updating, and deletion)
+- You manage data plane operations
+- push broker logs to CloudWatch, S3, or Kinesis Data Firehose
+- API calls are all logged to CloudTrail
 
 ### Serverless Architecture
 
