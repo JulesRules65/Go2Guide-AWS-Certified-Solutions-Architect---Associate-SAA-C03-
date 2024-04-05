@@ -12,13 +12,13 @@ https://nttdata.udemy.com/course/aws-certified-solutions-architect-associate-saa
 Udemy Practice Exams ($$$):
 https://nttdata.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate
 
-Cloud Guru course with Hands-On labs ($$$):
+Cloud Guru Course with Hands-On labs ($$$):
 https://learn.acloud.guru/course/certified-solutions-architect-associate/overview 
 
 3D-Role-Playing-Game ($$$):
 https://aws.amazon.com/training/digital/aws-cloud-quest
 
-AWS Traing live on Twitch (free):
+AWS Training live on Twitch (free):
 https://aws.amazon.com/training/twitch/
 
 Good old Youtube (free):
@@ -775,10 +775,183 @@ Amazon App Flow
 - push broker logs to CloudWatch, S3, or Kinesis Data Firehose
 - API calls are all logged to CloudTrail
 
+
 ### Serverless Architecture
+#### AWS Lambda
+- Credentials: ensure you're attaching a role to the function 
+- Lambda triggers: S3, Kinesis, and EventBridge (formerly CloudWatch Events) are triggers
+- Functions should be short. You can allocate up to 10 GB of RAM and 15 minutes of runtime
+- AWS API call: Can be a trigger to kick off an EventBridge rule.
+  - faster than trying to scrape through CloudTrail
+
+#### Containers and Images
+- Amazon EKS or EKS Anywhere:
+  - Kubernetes >> container management solution
+  - can run in AWS and on-premises
+  - open source
+- AWS Fargate
+  - Fargate is a technology that provides on-demand, right-sized compute capacity for containers.
+  - You don't have to provision, configure, or scale groups of virtual machines on your own to run containers.
+  - Can't work alone - you must be using Amazon ECS or EKS
+- Amazon ECS
+  - Container service
+  - can encompass just about any workload
+  - its preffered to use containers rather than EC2 on the exam
+  - know the basics >> start with Dockerfile, build an image, upload that to a repo, and then run it on a host
+- Amazon ECR
+  - AWS managed service
+  - Service that stores images and includes image vulnerability scanning
+
+#### Amazon Aurora Serverless
+- On-demand or auto scaling database
+- Variable traffic of workloads: good for unknown workloads or traffic spikes to the database
+- Capacity plannig
+
+#### AWS X-Ray
+- gain application insights using requests and responses of services and functions at different points in an application flow
+- watch out for words like: traces and downstream response times
+- integrates natively with AWS Lambda or Amazon API Gateway to gain deeper insights
+  - helps to understand your workload requests and responses
+
+#### AWS AppSync
+- best architecture for a managed GraphQL interface for any frontend application or developer
+- connects applications and services to data and events with secure, serverless and high-performing GraphQL and Pub/Sub APIs
 
 
 ### Security
+#### DDoS & AWS Shield
+- Distributed Denial of Service (DDoS) attack attempts to make your website/app unavailable to your end users
+  - Layer 4 attacks such as SYN floods or NTP aplification attacks
+  - Layer 7 attacks include floods of GET/POST requests
+- Use AWS Shield for protection against DDoS attacks
+  - Layer 3 and Layer 4 protection
+  - "Shield advanced" costs 3.000 USD a month >> gives you a dedicated 24/7 DDoS Response Team
+
+#### CloudTrail
+- is basically just CCTV for your AWS account
+- logs all API calls made to your AWS account and stores these logs in S3
+- After-the-fact incident investigation
+- Near real-time intrusion detection
+- Industry and regulatory compliance
+
+#### AWS WAF
+- Operates at Layer 7 (can block Layer 7 DDoS attacks)
+- can even block SQL injections and cross-site scripting
+- or block access to specific countries or IP addresses
+- allows 3 different behaviours
+  - Allow all requests (except the ones you specify)
+  - Block all requests (except the ones you specify)
+  - Count the requests that match the properties you specify
+
+#### AWS Firewall Manager
+- can secure multiple AWS accounts and resources centrally
+
+#### GuardDuty
+- Guards your Network
+- Alerts you of any abnormal or malicious behaviour (through AI)
+- Updates a database of known malicious domains (through 3rd party feeds)
+- Monitors CloudTrail logs, VPC Flow Logs, and DNS logs
+- Findings appear in the GuardDuty dashboard.
+  - CloudWatch Events can be used to trigger a Lambda function to proactively address a threat
+
+#### Macie
+- Uses AI to analyze data in S3 and helps identify personal identifiable information, personal health information, and financial data
+- Great for HIPAA and GDPR compliance as well as preventing identity theft
+- Alerts can be sent to Amazon EventBridge and integrated with your event management system
+- Automate remediation actions using services such as Step Functions
+
+#### Inspector
+- Used to perform vulnerability scans on both EC2 instances and VPCs (run once or weekly)
+  - for EC2: host assessments
+  - for VPC: network assessments 
+
+#### KMS
+- AWS Key Management Service 
+  - managed service
+  - makes it easy for you to create and control the encryption keys used to encrypt your data
+  - start using service by requesting the creation of a customer master key (CMK)
+    - You control the lifecycle of the CMK as well as who can use or manage it
+  - Three ways to generate a CMK
+    - AWS creates it. The key material for a CMK is generated within hardware security modules (HSMs)
+    - Import key material from your own key management infrastructure
+    - Have the key material generated and used in an AWS CloudHSM cluster as part of the custom key store feature in AWS KMS
+  - Three ways to control permissions
+    - Use the key policy: full scope of access defined in a single document
+    - Use IAM policies in combination with the key policy: lets you manage all the permissions in IAM
+    - Use grants in combination with the key policy: allow access to CMK in the key policy, as well as allow users to delegate their access to others
+
+#### KMS vs. CloudHSM
+- KMS
+  - Shared tenancy of underlying hardware
+  - Automatic key rotation
+  - Automatic key generation
+- CloudHSM
+  - Dedicated HSM to you (physical hardware device)
+  - Full control of underlying hardware
+  - Full control of users, groups, keys, etc.
+  - No automatic key rotation
+
+#### Secrets Manager
+- can be used to securely store your application secrets: database credentials, API keys, SSH keys, passwords ...
+- Applications use the Secrets Manager API
+- Rotating credentials is easy
+- When enabled, Secrets Manager will rotate credentials immediately
+  - make sure all your application instances are configured to use SM BEFORE enabling credential rotation
+
+#### Parameter Store vs Secrets Manager
+- If you are trying to minimize cost, choose Parameter Store
+- If you need more than 10.000 parameters, key rotation, ability to generate passwords using CloudFormation, choose Secrets Manager
+
+#### Presigned URLs
+- used to share private files in your S3 buckets
+
+#### Advanced IAM Policy Documents
+- if something is not explicitly allowed >> implicity denied
+- explicit deny > everything else
+- only attached policies have effect. If you have multiple policies but haven't attached them to groups etc. they're not going to have an effect
+- AWS joins all applicable policies >> remember that explicit deny will ailways beat that allow
+- You got AWS managed policies and then you've got your customer managed policies as well
+
+#### AWS Certificate Manager
+- used to integrate SSl certificates
+- AWS Certificate Manager integrates with Elastic Load Balancing, CloudFront, and API Gateway
+- its a free service that saves time and money
+  - automatically renew SSL certificates and rotate the old certificates with new certificates
+
+#### AWS Audit Manager
+- AWS Audit Manager helps you collect, review, and manage evidence to demonstrate that your usage of AWS services is in compliance.
+- continous auditing
+- automating auditing reports
+- HPAA or GDPR compliance
+
+#### AWS Artifact
+- AWS Artifact offers evidence to prove that the AWS Cloud infrastructure meets the compliance requirements.
+- see a scenario question asks about audits and the need for compliance reports
+
+#### Amazon Cognito
+- Easily add user sign-up and authentication to your mobile and web apps.
+- It also enables you to authenticate users through an external identity provider and provides temporary security credentials
+- User pool: user directories that provide sign-up and sign-in options for users of your application
+- Identity pool: allow your users access to other AWS services
+- use both pools seperately or together
+- Remember the chronological order of the way Cognito works
+  - device connects to a user pool and authenticates and gets tokens
+  - it then basically exchange those tokens with an identity pool and that will give it AWS credentials
+  - access AWS services using credentials
+
+#### Amazon Detective
+- Operates accross multiple AWS services and analyzes the **root cause** of an event
+- Do not confuse it with Inspector
+  - Inspector is an automated vulnerability management service that continually scans EC2 and container workloads for software vulnerabilities and unintended network exposure
+
+#### AWS Network Firewall
+- filters your network traffic before it reaches your internet gateway
+- or you require intrusion prevention systems
+- or any hardware firewall requirements
+- AWS manage all the hardware for you
+
+#### AWS Security Hub
+- single place to view all your security alerts across multiple AWS security services and AWS aacounts
 
 
 ### Automation
