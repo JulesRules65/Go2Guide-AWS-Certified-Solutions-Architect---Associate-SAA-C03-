@@ -1075,15 +1075,128 @@ Amazon App Flow
 
 
 ### Migration
+#### AWS Snow Family
+- The AWS Snow Family helps customers who need to run operations in austere, non-data center environments, and in locations which lack consistent network connectivity.
+- Accelerate moving offline data or remote storage to the cloud
+
+##### **AWS Snowmobile** 
+- Is a standard 45-foot shipping container filled with mass-storage AWS Snowball devices, together storing up to 100 PB (petabytes).
+- The container is pulled by a semi-trailer truck.
+
+##### **Snowball Edge Compute Optimized** or **Snowball Edge Storage Optimized**
+- Accelerate application performance in disconnected, austere edge environments and run compute workloads with little or no connectivity.
+- Has no storage or processing power constraints, can be used to send terabytes of data to the cloud quickly.
+
+##### **AWS Snowcone**
+- AWS Snowcone is the most compact and portable device
+- Deploy ultra-portable data transfer and edge computing devices anywhere
+- Collect and process data, transfer with AWS DataSync, or ship the device with data to AWS for offline transfer.
+
+#### Storage Gateway
+- Gives your applications on-premises and in-cloud access to virtually unlimited cloud storage.
+- You can deploy Storage Gateway as a virtual machine (VM) within your VMware, Hyper-V, or Linux KVM virtual environment
+- Or as an Amazon EC2 instance within your Amazon Virtual Private Cloud (Amazon VPC).
+- **File Gateway** delivers on-premises file access to your Amazon S3 data
+- **Tape Gateway** virtualizes tape backup and archive workflows in AWS
+- **Volume Gateway** expands on-premises block storage capacity
+
+#### DataSync and Transfer Family
+- DataSync is an agent-based solution that excels at one-time migrations of file shares into AWS
+  - EFS and FSx are both viable locations for DataSync to transfer content into
+- Transfer Family allows you to use legacy file transfer protocols to  give older applications the ability to read and write from S3
+
+#### Migration Hub
+- Is an organizational tool that gives you a way to organize all your steps
+- Discover applications for migration and modernization and outline strategies for execution
+- Utilizes guided migration templates and collaborative efforts across teams
+- **Database Migration Service:** Your go-to tool for any sort of database migration. It works for on-premises to the cloud, or for moving data between different RDS databases
+- **Server Migration Service:** The tool you'll want to use to migrate out of the data center and into AWS
+
+#### AWS Application Discovery Service
+- Discover on-premises server inventory and behavior to plan cloud migrations
+- Quickly migrate entire applications to the AWS Cloud
+- Agentless discovery can be used via OVA file deployment to vSphere
+- Agent-based discovery collects detailed information of VMs on both Linux and Windows OS
+
+#### AWS Application Migration Service
+- Automated lift-and-shift service for migrating infrastructure to AWS
+- Replicates sorce servers into AWS for non-disruptive cutovers
+- it automatically converts and launches your servers on AWS
+- RTO of minutes and RPO of sub-seconds
+  - Recovery Time Objective (RTO)
+  - Recovery Point Objective (RPO)
 
 
 
 ### Front-End Web and Mobile
+#### AWS Amplify
+- Build full-stack web and mobile apps in hours
+- Focus on coding and not the infrastructure
+- Add features like auth and storage, connect to real-time data sources, deploy, and scale to millions of users
+- Server-side rendering support
+
+#### AWS Device Farm
+- Is an application testing service that lets you improve the quality of your web and mobile apps by testing them across an extensive range of desktop browsers and real mobile devices >> without having to provision and manage any testing infrastructure
+
+#### Pinpoint
+- Is an AWS service that you can use to engage with your customers across multiple messaging channels
+- You can use Amazon Pinpoint to send push notifications, in-app notifications, emails, text messages, voice messages, and messages over custom channels
+- It includes segmentation, campaign, and journey features that help you send the right message to the right customer at the right time over the right channel
+- Leverage machine learning models to predict engagement interactions
 
 
 
 ### Machine Learning
+#### Amazon Rekognition
+- Makes it simple to join your application’s image analysis and video analysis by using deep learning, highly scalable, and proven technology without having the ML tool.
+- Content moderation using AI/ML
+
+#### Amazon SageMaker
+- Empowers developers and data scientists to create, train, and deploy ML models into a production-ready hosted environment within a single platform.
+- Notebooks: access a managed Jupyter Notebook environment
+- Set up and manage labeling jobs for training datasets using active learning and human labeling
+- Stages: Create a Model >> Create an Endpoint Configuration >> Create an Endpoint
+- SageMaker Neo: automatically optimizes machine learning models for inference on cloud instances and edge devices to run faster with no loss in accuracy.
+- Reducing cost: Elastic inference
+
+#### Comprehend
+- Uses natural language processing (NLP) to extract insights about the content of documents
+- For example, using Amazon Comprehend you can search social networking feeds for mentions of products or scan an entire document repository for key phrases.
+- Sentiment analysis
+
+#### Forecast
+- Designed to automate the data, detect the key attributes, and pick suitable algorithms to produce an accurate time-series forecast
+- Analyze time-series data and make predictions based on that analysis
+
+#### Fraud Detector
+- Is a highly specialized AI tool built to **quickly identify potentially fraudulent activities** such as stolen debit cards, credit cards, and fake registrations.
+
+#### Kendra
+- Amazon Kendra is an **intelligent search service** that uses natural language to find results accurately for your application and websites based on customer queries.
+
+#### Lex
+- Permits developers to publish text chatbots or voice across multiple platforms like chat services, web apps, and mobile devices
+- This is the service that powers the logic behind A-Lex-a
+
+#### Amazon Polly
+- Is an advanced Text-to-Speech service that converts text into human-like text-to-speech voices.
+- Moreover, it offers lifelike voice outputs across Japanese, Korean, and Chinese languages.
+- This allows users to develop automated responses in the languages of their choice and convenience.
+- Polly allows Alexa to speak back to you
+
+#### Transcribe
+- Is an automatic speech-to-text solution platform that uses ML models to convert audio to text and produce a review or read transcripts.
+
+#### Textract
+- Is a deep learning-based service that automatically extracts text and handwriting, detecting data from scanned copies.
+
+#### Translate
+- Is a neural machine translation service that allows you to translate a bulk amount of text from one language to another. It supports 75 languages
 
 
 
 ### Media
+- Elastic Transcoder: convert your media files into an optimized format of a particular device
+  - You simply create a transcoding “job” specifying the location of your source media file and how you want it transcoded
+- Amazon Kinesis Video Streams: video streaming at scale from millions of devices >> e.g. Ring (doorbell camera)
+  - It durably stores, encrypts, and indexes video data in your streams, and allows you to access your data through easy-to-use APIs. 
