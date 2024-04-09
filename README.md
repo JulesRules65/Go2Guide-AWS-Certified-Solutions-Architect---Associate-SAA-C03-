@@ -108,6 +108,9 @@ You might give some users administrative permissions to perform all actions in I
 - **Always set up password rotations:** Create and customize your own password rotation policies
 - **IAM Federation:** When you log on to your PC (usually using Microsoft AD [now Entra ID]), you can use the same credentials to log in to AWS. Uses the SAML standard, which is Active Directory
 
+#### Short-term security credentials
+- AWS Security Token Service (STS) provides a mechanism for issuing existing users with temporary credentials that grant access to additional resources.
+- STS credentials are typically used to delegate access to the IAM roles in your AWS account
 
 ### Simple Storage Service (S3)
 - **Object based storage:** Allows you to upload files (objects)
@@ -898,6 +901,10 @@ Amazon App Flow
 - When enabled, Secrets Manager will rotate credentials immediately
   - make sure all your application instances are configured to use SM BEFORE enabling credential rotation
 
+#### Parameter Store
+- universal key value storage
+- CloudFormation can look up values that are stored in there
+
 #### Parameter Store vs Secrets Manager
 - If you are trying to minimize cost, choose Parameter Store
 - If you need more than 10.000 parameters, key rotation, ability to generate passwords using CloudFormation, choose Secrets Manager
@@ -945,9 +952,9 @@ Amazon App Flow
   - Inspector is an automated vulnerability management service that continually scans EC2 and container workloads for software vulnerabilities and unintended network exposure
 
 #### AWS Network Firewall
-- filters your network traffic before it reaches your internet gateway
-- or you require intrusion prevention systems
-- or any hardware firewall requirements
+- Filters your network traffic before it reaches your internet gateway
+- Or you require intrusion prevention systems
+- Or any hardware firewall requirements
 - AWS manage all the hardware for you
 
 #### AWS Security Hub
@@ -955,18 +962,124 @@ Amazon App Flow
 
 
 ### Automation
+#### CloudFormation
+- Create templates that describe all the AWS resources that you want >> CloudFormation takes care of provisioning and configuring those resources for you
+- Understand what the parameters, mappings, and resource sections of the CloudFormation templates do
+  - The optional Parameters enable you to input custom values to your template each time you create or update a stack.
+  - The optional Mappings section matches a key to a corresponding set of named values >> if you want to set values based on a region, you can create a mapping that uses the region name as a key and contains the values you want to specify for each specific region.
+  - The required Resources section declares the AWS resources that you want to include in the stack
+- Select answers that favor having resources that can be replaced at any time. Stateless is better than stateful
+- Mappings and Parameter Store can be useful to help make your templates more flexible. >> we never want hardcoded IDs (like AMI or snapshot IDs)
+
+#### Elastic Beanstalk
+- A simple solution to bundle and deploy applications
+- Quickly deploy and manage applications in the AWS Cloud without having to learn about the infrastructure
+- You simply upload your application, and Elastic Beanstalk automatically handles the details of capacity provisioning, load balancing, scaling, and application health monitoring
+
+#### Systems Manager
+- Secure end-to-end management solution for resources on AWS and in multicloud and hybrid environments
+- AWS Systems Manager gives you visibility and control of your infrastructure on AWS
+- Systems Manager provides a unified user interface so you can view operational data from multiple AWS services and enables you to automate operational tasks across your AWS resources
+  - Session Manager: you can manage your(Amazon EC2 instances, edge devices, on-premises servers, and virtual machines (VMs)
+  - You can use either an interactive one-click browser-based shell or the AWS Command Line Interface (AWS CLI)
+- allows you to safely automate common and repetitive IT operations and management tasks across multiple accounts and AWS Regions
 
 
 ### Caching
+#### CloudFront & Global Accelerator
+- AWS Global Accelerator and Amazon CloudFront are separate services that use the AWS global network and its edge locations
+- CloudFront improves performance for both cacheable content (such as images and videos) and dynamic content (such as API acceleration and dynamic site delivery)
+  - Only option to add HTTPS to a static website being hosted in an S3 bucket
+- Global Accelerator improves performance for a wide range of applications over TCP or UDP by proxying packets at the edge to applications running in one or more AWS Regions
+  - Gives you static IP addresses. Whenever the scenario talks about IP caching & reducing issues with customers caching old IP addresses >> think Global Accelerator
+
+#### Amazon DynamoDB Accelerator (DAX)
+- is a fully managed, highly available caching service built for Amazon DynamoDB
+- Benefit from fast in-memory performance
+- DAX is suitable for read-intensive workloads
+
+#### Amazon ElastiCache
+- Is a serverless, Redis- and Memcached-compatible caching service delivering real-time, cost-optimized performance for modern applications.
+- Redis has more features than Memcached
+  - Redis can be a persistent data store or as a cache, whereas Memcached is just a cache
+  - Redis supports Backups
 
 
 ### Governance
+#### AWS Organizations
+- Centralized management of all of your AWS accounts
+- Consolidated billing for all member accounts
+- Meet your budgetary, security, or compliance needs
+- Service control policies (SCPs) >> They are the only way to restrict what the root account can do
+- Centralized logs >> CloudTrail offers support to log everything into a single AWS account
+- Isolate workloads into seperate accounts >> more layers of security and controls
+
+#### AWS Config
+- Provides a detailed view of the configuration of AWS resources in your AWS account and how they were configured in the past
+- You can see how the configurations and relationships change over time
+- Need access to the historical configurations of your resources for compliance? >> provided by AWS Config
+- Config offers the ability to automatically remediate problems using Automation documents
+
+#### Authentication
+- Make sure you're using AWS SSO for internal user management and Cognito for external
+- Active Directory
+  - If it's a lift and shift >> pick **Managed Microsoft AD**
+  - If AD is staying on-premises, select **AD Connector**
+- Cross-account role access is always a better solution than creating unnecessary IAM credentials
+
+#### Cost Management
+- Tracking costs >> you'll want to use a combination of tags, Cost Explorer, and AWS Budgets
+- Create proactive alerts. When users get to the 80% threshold, tell someone via SNS
+- Automate the response to spend less money. Always think about how you can remove the human interaction
+- **AWS Cost and Usage Reports** or **Cost Explorer** for in-depth reporting purposes
+  - They can also be set up to automatically store updated reports in Amazon S3 every 24 hours
+- Use AWS Compute Optimizer ot generate recommendations on implementing more accurate compute sizes bases on your actual needs
+
+#### Trusted Advisor
+- Optimize costs, improve performance, and address security gaps
+- Continuously evaluates your AWS environment using best practice checks across the categories of cost optimization, performance, resilience, security, operational excellence, and service limits
+- Recommend actions to remediate any deviations from best practices
+- For the exam: i's strictly an auditing tool and won't solve the problem for you
+  - to automate it use EventBridge to kick off a Lambda function to solve the problem for you
+
+#### AWS Control Tower
+- Offers the easiest way to set up and govern a secure, compliant, multi-account AWS environment based on best practices established by working with thousands of enterprises.
+- Extends the capabilities of AWS Organizations. To help keep your organizations and accounts from drift, which is divergence from best practices, AWS Control Tower applies controls (sometimes called guardrails).
+
+#### AWS License Manager
+- Makes it easier for you to manage your software licenses from software vendors centrally across AWS and your on-premises environments.
+- prevent license abuse and overcharges and reduce the risk of non-compliance and misreporting.
+
+#### AWS Service Catalog
+- Centrally manage commonly deployed IT services, and helps organizations achieve consistent governance and meet compliance requirements.
+- End users can quickly deploy only the approved IT services they need, following the constraints set by your organization.
+
+#### AWS Proton
+- Automated infrastructure as code provisioning and deployment of serverless and container-based applications
+- As an administrator, you create versioned service templates that define standardized infrastructure and deployment tooling
+- As an application developer, you can select from the available service templates to automate your application or service deployments.
+
+#### Well-Architected Tool
+- Document architectural decisions and their measurements against well-established industry best practices
+- The framework provides a consistent approach for measuring architectures and provides guidance for implementing designs that scale with your needs over time.
+
+#### AWS Health
+- Dashboard and service meant to provide notifications of both public and account-specific events within AWS
+- AWS Health provides ongoing visibility into your resource performance and the availability of your AWS services and accounts.
+- Questions about service alerts or notifications of EC2 hardware maintenance reboots will leverage AWS Health in some manner
+
+#### AWS Personal Health Dashboard vs. Service Health Dashboard
+- AWS Personal Health Dashboard provides alerts and guidance for AWS events that might affect your environment.
+- While the Service Health Dashboard shows the general status of AWS services, the Personal Health Dashboard provides proactive and transparent notifications about your specific AWS environment
+
 
 
 ### Migration
 
 
+
 ### Front-End Web and Mobile
+
 
 
 ### Machine Learning
