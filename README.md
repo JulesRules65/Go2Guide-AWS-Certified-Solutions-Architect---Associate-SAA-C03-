@@ -743,7 +743,7 @@ Amazon App Flow
 - is made up of EC2 instances: you can employ your standard EC2 instance cost-saving measures
 - offers several built-in open-source tools to process vast amounts of big data
 
-#### Kinesis
+#### Amazon Kinesis
 - only service with real-time response
 - SQS and Kinesis can both be queues.
   - SQS is easier and simpler
@@ -751,6 +751,7 @@ Amazon App Flow
 - understand the difference between Data Firehose and Data Streams
   - Data Firehose >> near realtime
   - Data Streams >> real-time
+  - Video Streams >> more easily and securely stream video from connected devices to AWS for analytics, ML, playback, and other processing
 
 #### Athena & Glue
 - Athena: Serverless SQL.
