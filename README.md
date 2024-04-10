@@ -59,6 +59,18 @@ AWS Support Plans:
 https://aws.amazon.com/premiumsupport/plans
 
 
+## Get an extra 30 minutes for AWS Certification exams
+A 30-minute exam extension is available upon request to non-native English speakers when taking an exam in English. 
+The accommodation, “ESL +30,” only needs to be requested once, prior to registering for an exam. It will apply to all future exam registrations with all test delivery providers. To request this accommodation, follow these steps:
+
+- Sign in to https://aws.training/Certification
+- Select the **Go to your Account** button. 
+- Select the **Request Exam Accommodations** button, followed by **Request Accommodation**.
+- Using the Accommodation Type dropdown, **select ESL +30 MINUTES**.
+- Select the **Create** button.
+
+
+
 ## Exam Tips
 
 ### AWS Fundamentals
@@ -186,13 +198,16 @@ An S3 Lifecycle configuration is an XML file that consists of a set of rules wit
 - **Prefix:** e.g. mybucketname/folder1/subfolder1/myfile.jpg >>> /folder1/subfolder1 is prefix
 - You can achieve a high number of requests: **3.500 PUT/COPY/POST/DELETE** and **5.500 GET/HEAD** requests per second, per prefix
 - Get better performance by spreading your reads across **different prefixes**
-  - There are no limits to the number of prefixes in a bucket. You can increase your read or write performance by using parallelization. For example, if you create 10 prefixes in an Amazon S3 bucket to parallelize reads, you could scale your read performance to 55,000 read requests per second. Similarly, you can scale write operations by writing to multiple prefixes.
+  - There are no limits to the number of prefixes in a bucket. You can increase your read or write performance by using parallelization.
+    - For example, if you create 10 prefixes in an Amazon S3 bucket to parallelize reads, you could scale your read performance to 55,000 read requests per second.
+    - Similarly, you can scale write operations by writing to multiple prefixes.
 - **SSE-KMS built-in limits**
   - Region-specific, however it's either 5.500, 10.000 or 30.000 requests per second
   - Uploading/downloading will count toward the KMS quota
   - Currently you cannot request a quota increasy for KMS
 - Use **multipart uploads** to increase performance when uploading files to S3 (for any file over 100 MB)
 - Use **S3 byte-range fetches** to increase performance when downloading files to S3
+- Use **Transfer Acceleration** to transfer from gigabytes to terabytes of data on a regular basis across continents
 
 #### Backing up Data with S3 Replication
 - You can replicate objects from one bucket to another
@@ -248,7 +263,7 @@ EC2 is like a VM, hosted in AWS instead of your own data center
 You can change the security groups for an instance when the instance is in the running or stopped state
 - Changes to security groups take effect immediately
 - You can have any number of EC2 instances within a security group
-- You can have multiple security groups attached to EC2 instances
+- You can have multiple security groups attached to EC2 instances (up to 5)
 - ALL inbound traffic is blocked by default
 - All outbound traffic is allowed
 
@@ -424,7 +439,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Multi-AZ
   - Exact copy of your production database in another AZ
   - Used for disaster recovery
-  - In the event of a failure, RDS will automatically failover to the standby instance
+  - In the event of a failure, RDS for MySQL will automatically failover to the standby instance in a different AZ
 - Read Replica
   - A read only copy of your primary database in the same AZ, cross AZ or cross region
   - Used to increase or scale read performance
@@ -442,6 +457,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Think of Aurora Serverless in a scenario question where it's talking about setting up a serverless database
 
 #### DynamoDB
+- non-relational database, also known as NoSQL database, that uses a simple **key-value method** to store data.
 - Stored on SSD storage
 - Spread across 3 geographically distinct data centers
 - Eventually consistent reads (default)
@@ -449,6 +465,11 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Difference between eventually & strongly
   - Eventually: Consistency across all copies of data is usually reached within seconds. Best read perfromance
   - Strongly: returns a result that reflects all writes that received a successful response prior to the read
+
+##### DynamoDB as a document database?
+- A key-value store holds for each key a single value. Arguably, if the value can be an entire document, 
+you can call this database a "document store". In this sense, DynamoDB is a document store.
+
 
 ##### DynamoDB Transactions
 - Provides ACID across one or more tables within a single AWS account and region
@@ -508,7 +529,14 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 ### Virtual Private Cloud (VPC) Networking
 - Think of a VPC as a logical data center
 - Consists of internet gateways, route tables, network access control lists, subnets, and security groups
+- Includes a default security group >> **You can't delete this group**, however, you can change the group's rules.
+
+#### Subnet basics
 - 1 subnet is always in 1 AZ
+- Public subnet – The subnet has a direct route to an internet gateway. Resources in a public subnet can access the public internet.
+- Private subnet – The subnet does not have a direct route to an internet gateway. Resources in a private subnet require a NAT device to access the public internet.
+- Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet.
+- Every subnet that you create is automatically associated with the main route table for the VPC.
 
 #### NAT Gateways
 - Redundant inside the AZ
@@ -522,16 +550,38 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 #### Security Groups
 - SG are statful - if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules
   - responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules
+- Remember you can't delete default security group, however, you can change the group's rules.
 
 #### Network ACL
 - Default Network ACLs: coming automatically with VPC - by default all outbound and inbound traffic **is allowed**
-- Custom Network ACL: create custom network ACLs - by default all outbound and inbound traffic **is denied**
-- Subnet Associations: each subnet in VPC must be associated with a network ACL - if not the subnet will automatically use default network ACL
-- Block IP Addresses: Block IP addresses using network ACLs, not Security groups
+- create custom network ACLs - by default all outbound and inbound traffic **is denied**
+- each subnet in VPC must be associated with a network ACL - if not the subnet will automatically use default network ACL
+- Block IP addresses using network ACLs, not Security groups
 - You can associate a network ACL with multiple subnets; but a subnet with only one network ACL
 - network ACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule
   - seperate inbound and outbound rules, each rule can either allow or deny traffic
 - Unlike SGs Network ACLs are stateless, responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa)
+- Each network ACL also includes a rule whose rule number is an asterisk (*). 
+  - This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
+  - You can't modify or remove this rule.
+
+NACL with asterix example
+```
+100 All Traffic Allow
+200 All Traffic Deny
+* All Traffic Deny
+```
+
+Good to know which common ports are used
+| Port Number  | Usage |
+| ------------- | ------------- |
+| 20  | File Transfer Protocol (FTP)-Data Transfer  |
+| 21  | File Transfer Protocol (FTP)-Command Control |
+| 22  | Secure Shell (SSH)  |
+| 25  | Simple Mail Transfer Protocol (SMTP) E-mail Routing  |
+| 53  | Domain Name System (DNS) service  |
+| 80  | Hypertext Transfer Protocol (HTTP)  |
+| 443  | HTTP Secure (HTTPS) - HTTP over TLS/SSL  |
 
 #### Direct Connect
 - connects directly to your data center
@@ -564,6 +614,9 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 #### VPN Hub
 - simplifying VPN network topology
 - Use this approach if you have multiple branch offices and existing internet connections and would like to implement a convenient, potentially low-cost hub-and-spoke model for primary or backup connectivity between these remote offices.
+
+#### AWS Managed VPN
+- lets you reuse existing VPN equipment and processes and also use existing internet connections.
 
 #### AWS Wavelength
 - mobile edge computing
@@ -622,7 +675,8 @@ You can use health checks to route your traffic to instances or targets that are
 - Rules: Determine how the load balancer routes requests to its registered targets. Consists of a priority, one or more actions, and one or more conditions
 - Target Groups: each target group routes requests to one or more registered targets, such as EC2 instances, using the protocol and port number you specify
 - Limitations: Application Load Balancers only support HTTP and HTTPS
-- HTTPS: To use HTTPS listener, you must deploy at least one SSL/TLS server certificate. 
+- HTTPS: To use HTTPS listener, you must deploy at least one SSL/TLS server certificate.
+- **Only** the ALB can support path-based and host-based routing.
 
 #### Network Load Balancer
 - Layer 4
@@ -660,6 +714,7 @@ You can use health checks to route your traffic to instances or targets that are
 - Know your intervals
   - standard metric is delivered every five minutes
   - detailed monitoring delivers data every one minute
+- it's good to look up [available metrics(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/viewing_metrics_with_cloudwatch.html)]
 
 #### CloudWatch Logs
 - is the place for logs. EC2, on-premise, RDS, Lambda and CloudTrail can all integrate with this service
@@ -685,6 +740,10 @@ You can use health checks to route your traffic to instances or targets that are
 - Steady state groups: is an auto scaling group that has min, max, and desired capacity. e.g. min 1, max 1, desired capacity 1. when the instance fails then auto scaling will automatically recover that architecture and provide a new instance
 - Make sure you enable health checks from Load Balancers. If instances dont pass the health check they will be terminated by the auto scaling group. (that is not default behaviour)
 
+##### Auto Scaling Group cooldown
+- After your Auto Scaling group launches or terminates instances, it waits for a cooldown period to end before any further scaling activities
+- By default, this cooldown period is set to **300 seconds (5 minutes)**. If needed, you can update this after the group is created.
+
 #### Scaling Databases
 - RDS has the most database scaling options
 - Horizontal scaling is usually preferred over vertical
@@ -701,10 +760,15 @@ You can use health checks to route your traffic to instances or targets that are
 - It's important to understand the standard values for all of the SQS settings
 - Messages stored in SQS can only persist **up to 14 days**
 - If message ordering is important, make sure to select SQS FIFO queues
+  - FIFO has a batch limit of 3,000 messages per second
 
 #### Amazon SNS
 - proactive notifications: any time a question asks about email, text, or any type of push-based notification, think of SNS
 - CloudWatch works perfectly with SNS: get notifications from a CloudWatch alarm via e-mail etc.
+
+#### Amazon SES
+- Simple Email Service is an Email platform that provides an easy, cost-effective way for you to send and receive email using your own email addresses and domains
+- SES is NOT a supported destination for S3 event notifications.
 
 #### API Gateway
 - no need for an in depth understanding
@@ -753,12 +817,15 @@ Amazon App Flow
   - Data Streams >> real-time
   - Video Streams >> more easily and securely stream video from connected devices to AWS for analytics, ML, playback, and other processing
 
-#### Athena & Glue
+#### Amazon Athena & AWS Glue
 - Athena: Serverless SQL.
   - makes it easy to analyze data directly in S3
   - build dashboards and visualizations for business intelligence needs using QuickSight
+  - The Amazon Athena connector for Microsoft SQL Server enables Athena to run SQL queries on your data stored in Microsoft SQL Server using JDBC.
 - Glue: serverless ETL (Extract, transform, and load) service - can help create that schema for your data when paired with Athena
   - discover and connect to more than 70 diverse data sources and manage your data in a centralized data catalog
+  - use AWS Glue to export the data from DynamoDB, transform the data, and then load the data back into DynamoDB.
+
 
 #### Quicksight
 - QuickSight is your go-to tool for visualizing data
@@ -1159,6 +1226,7 @@ Amazon App Flow
 - Stages: Create a Model >> Create an Endpoint Configuration >> Create an Endpoint
 - SageMaker Neo: automatically optimizes machine learning models for inference on cloud instances and edge devices to run faster with no loss in accuracy.
 - Reducing cost: Elastic inference
+- Savings Plans offer a flexible usage-based pricing model for Amazon SageMaker, 
 
 #### Comprehend
 - Uses natural language processing (NLP) to extract insights about the content of documents
