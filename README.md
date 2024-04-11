@@ -121,7 +121,7 @@ You might give some users administrative permissions to perform all actions in I
 - **IAM Federation:** When you log on to your PC (usually using Microsoft AD [now Entra ID]), you can use the same credentials to log in to AWS. Uses the SAML standard, which is Active Directory
 
 #### Short-term security credentials
-- AWS Security Token Service (STS) provides a mechanism for issuing existing users with temporary credentials that grant access to additional resources.
+- **AWS Security Token Service (STS)** provides a mechanism for issuing existing users with temporary credentials that grant access to additional resources.
 - STS credentials are typically used to delegate access to the IAM roles in your AWS account
 
 ### Simple Storage Service (S3)
@@ -154,11 +154,11 @@ https://bucket-name.s3.Region.amazonaws.com/key-name
 - **Automatic scaling:** S3 scales automatically with demand
 
 #### Versioning Objects
-- **All Versions:** All Versions of an object are stored in S3. This includes all writes and even if you delete an objects
-- **Backup:** Can be a great backup tool
-- **Cannot be disabled:** Once enbaled, versioning cannot be disabled - only suspended
-- **Lifecycle Rules:** Can be integrated with lifecycle rules
-- **Supports MFA:** Can support MFA
+- All Versions of an object are stored in S3. This includes all writes and even if you delete an objects
+- Can be a great backup tool
+- Once enbaled, versioning cannot be disabled - only suspended
+- Can be integrated with lifecycle rules
+- Can support MFA
 
 #### Storage Classes
 Head over to [S3 Storage Classes](https://aws.amazon.com/de/s3/storage-classes/)
@@ -329,25 +329,31 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
   - for smaller deployments, so this will be things like putting in a 1U server inside a retail shop, for example
 
 ### Elastic Block Storage (EBS)
+- Provides scalable, high-performance block storage resources that can be used with Amazon EC2 instances.
+- You can use **Amazon Data Lifecycle Manager** to automate the creation, retention, and deletion of EBS snapshots and EBS-backed AMIs.
+  
 #### SSD Volumes
 - gp2: General purpose SSD
   - for boot disks and general applications
   - up to 16.000 IOPS per volume
-  - 
+    
 - gp3: Provisioned IOPS SSD
   - for high performance applications
   - predictable 3.000 IOPS baseline performance and 125 MiB/s regardless of volume size
+    
 - io1: Provisioned IOPS SSD
   - for OLTP and latency-sensitive applications
   - 50 IOPS/GiB
   - up to 64.000 IOPS per volume
   - high performance
+    
 - io2: Provisioned IOPS SSD
   - for OLTP and latency-sensitive applications
   - 500 IOPS/GiB
   - up to 64.000 IOPS per volume
   - high performance and most expensive
-- io2 Block Express
+    
+- io2 Block Express:
   - is the highest-performance SSD volume
   - designed for business-critical latency-sensitive transactional workloads.
 
@@ -356,6 +362,7 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
   - for big data, data warehouse, ETL
   - max throughput is 500 MB/s per volume
   - not a boot volume
+    
 - sc1: Cold HDD
   - for less frequently accessed data
   - max throughput of 250 MB/s per volume
@@ -451,7 +458,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
   - Used to increase or scale read performance
   - Great for read heavy workloads and takes the load off your primary database
 
-#### Amazon Auroroa
+#### Amazon Aurora DB Cluster
 - Compatible with MySQL, PostgreSQL
 - 2 copies of your data are contained in each AZ, with a minimum of 3 AZs >> 6 copies of your data
 - Share Aurora snapshots with other aws accounts
@@ -838,6 +845,7 @@ Amazon App Flow
 
 #### Quicksight
 - QuickSight is your go-to tool for visualizing data
+- It connects to your data in the cloud and combines data from many different sources
 
 #### OpenSearch (ElasticSearch)
 - OpenSearch is primarily used for analyzing log files and various documents, especially within an ETL process
@@ -879,8 +887,8 @@ Amazon App Flow
   - its preffered to use containers rather than EC2 on the exam
   - know the basics >> start with Dockerfile, build an image, upload that to a repo, and then run it on a host
 - Amazon ECR
-  - AWS managed service
-  - Service that stores images and includes image vulnerability scanning
+  - Is an AWS managed container image registry
+  - image scanning helps in identifying software vulnerabilities in your container images
 
 #### Amazon Aurora Serverless
 - On-demand or auto scaling database 
@@ -1277,7 +1285,11 @@ Amazon App Flow
 
 
 ### Media
-- Elastic Transcoder: convert your media files into an optimized format of a particular device
+- **Elastic Transcoder:** convert your media files into an optimized format of a particular device
   - You simply create a transcoding “job” specifying the location of your source media file and how you want it transcoded
-- Amazon Kinesis Video Streams: video streaming at scale from millions of devices >> e.g. Ring (doorbell camera)
-  - It durably stores, encrypts, and indexes video data in your streams, and allows you to access your data through easy-to-use APIs 
+- **Amazon Kinesis Video Streams:** video streaming at scale from millions of devices >> e.g. Ring (doorbell camera)
+  - It durably stores, encrypts, and indexes video data in your streams, and allows you to access your data through easy-to-use APIs
+
+
+
+    
