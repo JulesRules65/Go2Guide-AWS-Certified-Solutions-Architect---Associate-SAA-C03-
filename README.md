@@ -6,9 +6,9 @@ Don't give up when you don't understand a concept perfectly .. remember, doing i
 
 
 ## Where to study
-[Udemy Course ($$$)](https://nttdata.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03)
+[Udemy Course ($$$)](https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03)
 
-[Udemy Practice Exams ($$$)](https://nttdata.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate)
+[Udemy Practice Exams ($$$)](https://www.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate)
 
 [Cloud Guru Course with Hands-On labs ($$$)](https://learn.acloud.guru/course/certified-solutions-architect-associate/overview )
 
