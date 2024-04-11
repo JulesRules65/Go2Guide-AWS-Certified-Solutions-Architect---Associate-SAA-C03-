@@ -300,7 +300,7 @@ echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
   - Choose EFA if you see a scenario question mentioning HPC or ML
 
 #### Types of Placement Groups
-To meet the needs of your workload, you can launch a group of interdependent EC2 instances into a placement group to influence their placement.
+To meet the needs of your workload, you can launch a group of interdependent EC2 instances into a placement group to influence their placement
 - **Cluster Placement Groups**
   - Low network latency, high network throughput
   - **can't** span multiple AZs
@@ -317,16 +317,16 @@ To meet the needs of your workload, you can launch a group of interdependent EC2
   - instance must be stopped
   - move or remove via CLI or SDK, but you can't do it via the console yet
 
-#### Deploy vCenter on AWS using VMware
-this is basically the perfect solution for extending your private VMware cloud onto the AWS public cloud.
-E.g. things like cloud migration or just basically doing disaster recovery using AWS, but you want all the native tools that come with VMware and within vCenter itself.
+#### VMware Cloud (Deploy vCenter on AWS)
+- this is basically the perfect solution for extending your private VMware cloud onto the AWS public cloud
+- E.g. cloud migration or doing disaster recovery using AWS with all the native tools that come with VMware and within vCenter itself
 
 #### AWS Outposts
-With that you can extend AWS to your data center - just think of AWS Outposts as bringing AWS to you.
+With that you can extend AWS to your data center - just think of AWS Outposts as bringing AWS to you
 - **AWS Outpost racks**
-  - this is for large deployments, so these are 42U form factor racks that will go inside a data center.
+  - this is for large deployments, so these are 42U form factor racks that will go inside a data center
 - **AWS Outpost servers**
-  - for smaller deployments, so this will be things like putting in a 1U server inside a retail shop, for example.
+  - for smaller deployments, so this will be things like putting in a 1U server inside a retail shop, for example
 
 ### Elastic Block Storage (EBS)
 #### SSD Volumes
@@ -341,12 +341,15 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
   - for OLTP and latency-sensitive applications
   - 50 IOPS/GiB
   - up to 64.000 IOPS per volume
-  - high performance and most expensive
+  - high performance
 - io2: Provisioned IOPS SSD
   - for OLTP and latency-sensitive applications
   - 500 IOPS/GiB
   - up to 64.000 IOPS per volume
   - high performance and most expensive
+- io2 Block Express
+  - is the highest-performance SSD volume
+  - designed for business-critical latency-sensitive transactional workloads.
 
 #### HDD Volumes
 - st1: Throughput Optimized HDD
@@ -408,6 +411,8 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 #### FSx
 - Amazon FSx for Windows: When you need centralized storage for Windows-based applications, such as SharePoint, Microsoft SQL Server, Workspaces or any other native Microsoft application
 - Amazon FSx for Lustre: When you need high-speed, high-capacity distributed storage. For applications that do high performance computing (HPC), financial modeling, etc. Remember that FSx for Lustre can store data directly on S3
+  - FSx Lustre Scratch volumes are designed for immediate, high-speed data processing
+  - FSx Lustre Persistent volumes ensure long-term data durability and accessibility
 
 ### Comparing all Storage Options
 - S3: Used for serverless object storage
@@ -425,10 +430,11 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 
 
 ### Databases
-#### Relational Database Service (RDS)
+####  Amazon Relational Database Service (RDS)
 - **Database Types:** SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, and Amazon Aurora
 - RDS is for online transaction processing workloads: small transactions, like customer orders, banking transactions, booking systems
 - RDS is not suitable for online analytics processing: better use Redshift for tasks like analyzing large amounts of data
+- With **IAM database authentication**, you use an authentication token when you connect to your DB instance - by using a token, you can avoid placing a password in your code
 
 #### Read Replicas
 - **Scaling read performance:** used for scaling and not for disaster recovery
@@ -450,14 +456,14 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - 2 copies of your data are contained in each AZ, with a minimum of 3 AZs >> 6 copies of your data
 - Share Aurora snapshots with other aws accounts
 - 3 types or read replicas: Aurora replicas (automated failover available), MySQL replicas, and PostgreSQL replicas
-- Aurora has automated backups turned on by default.
+- Aurora has automated backups turned on by default
 
 ##### Auroroa Serverless
 - Provides a relatively, simple, cost-effective option for infrequent, intermittent, or unpredictable workloads
 - Think of Aurora Serverless in a scenario question where it's talking about setting up a serverless database
 
 #### DynamoDB
-- non-relational database, also known as NoSQL database, that uses a simple **key-value method** to store data.
+- non-relational database, also known as NoSQL database, that uses a simple **key-value method** to store data
 - Stored on SSD storage
 - Spread across 3 geographically distinct data centers
 - Eventually consistent reads (default)
@@ -467,9 +473,8 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
   - Strongly: returns a result that reflects all writes that received a successful response prior to the read
 
 ##### DynamoDB as a document database?
-- A key-value store holds for each key a single value. Arguably, if the value can be an entire document, 
-you can call this database a "document store". In this sense, DynamoDB is a document store.
-
+- A key-value store holds for each key a single value. Arguably, if the value can be an entire document, you can call this database a "document store".
+- >> In this sense, DynamoDB is a document store
 
 ##### DynamoDB Transactions
 - Provides ACID across one or more tables within a single AWS account and region
@@ -515,11 +520,11 @@ you can call this database a "document store". In this sense, DynamoDB is a docu
 - think AWS Keyspaces when they talk about migrating a big data Cassandra cluster to AWS
 
 #### Neptune
-- Is a graph database
+- Is a graph database and handles graph queries
 - think Neptune when they talk about graph database
 
 #### Quantum ledger database
-- is a fully managed ledger database that provides a transparent, immutable, and cryptographically verifiable transaction log.
+- is a fully managed ledger database that provides a transparent, immutable, and cryptographically verifiable transaction log
 
 #### Timestream
 - stores a large amount of time-series data for analysis
@@ -529,14 +534,14 @@ you can call this database a "document store". In this sense, DynamoDB is a docu
 ### Virtual Private Cloud (VPC) Networking
 - Think of a VPC as a logical data center
 - Consists of internet gateways, route tables, network access control lists, subnets, and security groups
-- Includes a default security group >> **You can't delete this group**, however, you can change the group's rules.
+- Includes a default security group >> **You can't delete this group**, however, you can change the group's rules
 
 #### Subnet basics
 - 1 subnet is always in 1 AZ
-- Public subnet – The subnet has a direct route to an internet gateway. Resources in a public subnet can access the public internet.
-- Private subnet – The subnet does not have a direct route to an internet gateway. Resources in a private subnet require a NAT device to access the public internet.
-- Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet.
-- Every subnet that you create is automatically associated with the main route table for the VPC.
+- Public subnet – The subnet has a direct route to an internet gateway. Resources in a public subnet can access the public internet
+- Private subnet – The subnet does not have a direct route to an internet gateway. Resources in a private subnet require a NAT device to access the public internet
+- Each subnet must be associated with a route table, which specifies the allowed routes for outbound traffic leaving the subnet
+- Every subnet that you create is automatically associated with the main route table for the VPC
 
 #### NAT Gateways
 - Redundant inside the AZ
@@ -550,7 +555,7 @@ you can call this database a "document store". In this sense, DynamoDB is a docu
 #### Security Groups
 - SG are statful - if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules
   - responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules
-- Remember you can't delete default security group, however, you can change the group's rules.
+- Remember you can't delete default security group, however, you can change the group's rules
 
 #### Network ACL
 - Default Network ACLs: coming automatically with VPC - by default all outbound and inbound traffic **is allowed**
@@ -561,8 +566,8 @@ you can call this database a "document store". In this sense, DynamoDB is a docu
 - network ACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule
   - seperate inbound and outbound rules, each rule can either allow or deny traffic
 - Unlike SGs Network ACLs are stateless, responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa)
-- Each network ACL also includes a rule whose rule number is an asterisk (*). 
-  - This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied. 
+- Each network ACL also includes a rule whose rule number is an asterisk (*)
+  - This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied
   - You can't modify or remove this rule.
 
 NACL with asterix example
@@ -606,17 +611,18 @@ Good to know which common ports are used
 - Requires a Network Load Balancer on the service VPC and an ENI on the customer VPC
 
 #### AWS Transit Gateway
+- Connects your VPCs and on-premises networks through a central hub.
 - Simplifying network topology
 - Use route tables to limit how VPCs talk to one another
 - Works with Direct Connect as well as VPN connections
-- Supports IP multicast (not supported by any other service)
+- **Supports IP multicast** (not supported by any other service)
 
 #### VPN Hub
 - simplifying VPN network topology
-- Use this approach if you have multiple branch offices and existing internet connections and would like to implement a convenient, potentially low-cost hub-and-spoke model for primary or backup connectivity between these remote offices.
+- Use this approach if you have multiple branch offices and existing internet connections and would like to implement a convenient, potentially low-cost hub-and-spoke model for primary or backup connectivity between these remote offices
 
 #### AWS Managed VPN
-- lets you reuse existing VPN equipment and processes and also use existing internet connections.
+- lets you reuse existing VPN equipment and processes and also use existing internet connections
 
 #### AWS Wavelength
 - mobile edge computing
@@ -638,21 +644,21 @@ Good to know which common ports are used
 
 #### Routing Policies
 - Simple Routing
-  - you can only have one record with multiple IP addresses. And if you specify multiple values in a record, Route 53 returns all values to the user in a random order.
+  - you can only have one record with multiple IP addresses. And if you specify multiple values in a record, Route 53 returns all values to the user in a random order
   - not working with health checks
 - Weighted Routing
-  - If you see any scenario based questions that's talking about you want to direct a certain percentage of your traffic to a particular region or availability zone or whatever.
+  - If you see any scenario based questions that's talking about you want to direct a certain percentage of your traffic to a particular region or availability zone or whatever
 - Latency-Based-Routing
   - if you see an exam question that's talking about latency
 - Failover Routing
-  - active passive setup. So our active might be in us-west-1 or us-west-2. And our passive setup might be an ap-souteast-2.
-  - And essentially fail over routing will have a health check on each region.
-  - And if we lose a region, it will switch from our active site to our passive site automatically.
+  - active passive setup. So our active might be in us-west-1 or us-west-2. And our passive setup might be an ap-souteast-2
+  - And essentially fail over routing will have a health check on each region
+  - And if we lose a region, it will switch from our active site to our passive site automatically
 - Geolocation Routing
-  - how can you make sure that a group of users in a particular location only go to a group of web servers in a particular location.
+  - how can you make sure that a group of users in a particular location only go to a group of web servers in a particular location
 - Geoproximity Routing
-  - This basically lets Amazon Route 53 route your traffic to resources based on the geographic location of your users and resources.
-  - And to use geo proximity routing you must be using Route 53 Traffic Flow. Traffic Flow was that GUI where we can do all kinds of complicated routing architectures with Route 53.
+  - This basically lets Amazon Route 53 route your traffic to resources based on the geographic location of your users and resources
+  - And to use geo proximity routing you must be using Route 53 Traffic Flow. Traffic Flow was that GUI where we can do all kinds of complicated routing architectures with Route 53
 - Multivalue Answer Routing
 
 #### Registering a Domain Name
@@ -666,7 +672,10 @@ Good to know which common ports are used
 
 
 ### Elastic Load Balencing (ELB)
-You can use health checks to route your traffic to instances or targets that are healthy
+- Elastic Load Balancing automatically distributes your incoming traffic across multiple targets
+- You can use health checks to route your traffic to instances or targets that are healthy
+- If you want your domain to point to a new ELB, then wait for the time-to-live (TTL) to expire. After that, the record will be updated and users get redirected to the new ELB
+  - TTL: Your computer has cached the previous DNS request, but once the TTL has expired it will get the new address.
 
 #### Application Load Balancer
 - Layer 7
@@ -676,7 +685,7 @@ You can use health checks to route your traffic to instances or targets that are
 - Target Groups: each target group routes requests to one or more registered targets, such as EC2 instances, using the protocol and port number you specify
 - Limitations: Application Load Balancers only support HTTP and HTTPS
 - HTTPS: To use HTTPS listener, you must deploy at least one SSL/TLS server certificate.
-- **Only** the ALB can support path-based and host-based routing.
+- **Only** the ALB can support path-based and host-based routing
 
 #### Network Load Balancer
 - Layer 4
@@ -695,7 +704,7 @@ You can use health checks to route your traffic to instances or targets that are
 - IPv4 address >> look for the X-Forwarded-For header
 
 #### Sticky Sessions
-- enable your users to stick to the same EC2 instance. Useful when storing information locally.
+- enable your users to stick to the same EC2 instance. Useful when storing information locally
 - scenario-based question: you remove an EC2 instance from a pool. but the load balancer continues to direct traffic to that EC2 instance
   - solve this by disabling sticky sessions
 - sticky sessions can be enabled for ALB as well but the traffic will be sent atthe target group level
@@ -733,8 +742,8 @@ You can use health checks to route your traffic to instances or targets that are
 #### Auto Scaling
 - is only for EC2
   - No other service can be scaled using Auto Scaling
-- Whenever possible, favor solutions that are predictive rather than reactive
-- Avoid long provisioning times by putting everything in an AMI (all dependencies and code). This is better than using user data whenever possible.
+- Whenever possible, favor solutions that are predictive rather than reactive or scheduled scaling
+- Avoid long provisioning times by putting everything in an AMI (all dependencies and code). This is better than using user data whenever possible
   - good when you need those instances to respond to a workload that has just hit your architecture
 - Make sure you're spreading your Auto Scaling groups over multiple AZs
 - Steady state groups: is an auto scaling group that has min, max, and desired capacity. e.g. min 1, max 1, desired capacity 1. when the instance fails then auto scaling will automatically recover that architecture and provide a new instance
@@ -742,15 +751,15 @@ You can use health checks to route your traffic to instances or targets that are
 
 ##### Auto Scaling Group cooldown
 - After your Auto Scaling group launches or terminates instances, it waits for a cooldown period to end before any further scaling activities
-- By default, this cooldown period is set to **300 seconds (5 minutes)**. If needed, you can update this after the group is created.
+- By default, this cooldown period is set to **300 seconds (5 minutes)**. If needed, you can update this after the group is created
 
 #### Scaling Databases
 - RDS has the most database scaling options
 - Horizontal scaling is usually preferred over vertical
   - Read replicas are your friend >> especially for read-heavy workloads
 - DynamoDB scaling comes down to access patterns
-  - If we have that consistent access pattern, where it's predictable, where we gradually need to scale up and then scale those reads and writes back down, that's when we're going to want to select the auto scaling method.
-  - If we see a scenario given to us that has an unpredictable workload, where that access pattern spikes up and down and up and down, and we can't really predict what we need, then we want to pick that on-demand option.
+  - If we have that consistent access pattern, where it's predictable, where we gradually need to scale up and then scale those reads and writes back down, that's when we're going to want to select the auto scaling method
+  - If we see a scenario given to us that has an unpredictable workload, where that access pattern spikes up and down and up and down, and we can't really predict what we need, then we want to pick that on-demand option
 
 
 ### Decoupling Workflows
@@ -768,7 +777,7 @@ You can use health checks to route your traffic to instances or targets that are
 
 #### Amazon SES
 - Simple Email Service is an Email platform that provides an easy, cost-effective way for you to send and receive email using your own email addresses and domains
-- SES is NOT a supported destination for S3 event notifications.
+- SES is NOT a supported destination for S3 event notifications
 
 #### API Gateway
 - no need for an in depth understanding
@@ -797,7 +806,7 @@ Amazon App Flow
 
 ### Big Data
 #### Redshift
-- Redshift is a relational database, but no replacement for RDS in traditional applications.
+- Redshift is a relational database, but no replacement for RDS in traditional applications
 - Meant for large scale data warehousing and data analytics
 - supports single-AZ and multi-AZs
 
@@ -809,7 +818,7 @@ Amazon App Flow
 
 #### Amazon Kinesis
 - only service with real-time response
-- SQS and Kinesis can both be queues.
+- SQS and Kinesis can both be queues
   - SQS is easier and simpler
   - Kinesis is faster and can store data for up to a year
 - understand the difference between Data Firehose and Data Streams
@@ -818,13 +827,13 @@ Amazon App Flow
   - Video Streams >> more easily and securely stream video from connected devices to AWS for analytics, ML, playback, and other processing
 
 #### Amazon Athena & AWS Glue
-- Athena: Serverless SQL.
+- Athena: Serverless SQL
   - makes it easy to analyze data directly in S3
   - build dashboards and visualizations for business intelligence needs using QuickSight
-  - The Amazon Athena connector for Microsoft SQL Server enables Athena to run SQL queries on your data stored in Microsoft SQL Server using JDBC.
+  - The Amazon Athena connector for Microsoft SQL Server enables Athena to run SQL queries on your data stored in Microsoft SQL Server using JDBC
 - Glue: serverless ETL (Extract, transform, and load) service - can help create that schema for your data when paired with Athena
   - discover and connect to more than 70 diverse data sources and manage your data in a centralized data catalog
-  - use AWS Glue to export the data from DynamoDB, transform the data, and then load the data back into DynamoDB.
+  - use AWS Glue to export the data from DynamoDB, transform the data, and then load the data back into DynamoDB
 
 
 #### Quicksight
@@ -852,7 +861,7 @@ Amazon App Flow
 - Credentials: ensure you're attaching a role to the function 
 - Lambda triggers: S3, Kinesis, and EventBridge (formerly CloudWatch Events) are triggers
 - Functions should be short. You can allocate up to 10 GB of RAM and 15 minutes of runtime
-- AWS API call: Can be a trigger to kick off an EventBridge rule.
+- AWS API call: Can be a trigger to kick off an EventBridge rule
   - faster than trying to scrape through CloudTrail
 
 #### Containers and Images
@@ -861,8 +870,8 @@ Amazon App Flow
   - can run in AWS and on-premises
   - open source
 - AWS Fargate
-  - Fargate is a technology that provides on-demand, right-sized compute capacity for containers.
-  - You don't have to provision, configure, or scale groups of virtual machines on your own to run containers.
+  - Fargate is a technology that provides on-demand, right-sized compute capacity for containers
+  - You don't have to provision, configure, or scale groups of virtual machines on your own to run containers
   - Can't work alone - you must be using Amazon ECS or EKS
 - Amazon ECS
   - Container service
@@ -874,7 +883,7 @@ Amazon App Flow
   - Service that stores images and includes image vulnerability scanning
 
 #### Amazon Aurora Serverless
-- On-demand or auto scaling database
+- On-demand or auto scaling database 
 - Variable traffic of workloads: good for unknown workloads or traffic spikes to the database
 - Capacity plannig
 
@@ -908,21 +917,21 @@ Amazon App Flow
 #### AWS WAF
 - Operates at Layer 7 (can block Layer 7 DDoS attacks)
 - can even block SQL injections and cross-site scripting
-- or block access to specific countries or IP addresses
+- or block access to specific countries or IP addresses (e.g. IPs with more than 2.000 requests in 5 min >> create rate-based rule)
 - allows 3 different behaviours
   - Allow all requests (except the ones you specify)
   - Block all requests (except the ones you specify)
   - Count the requests that match the properties you specify
 
 #### AWS Firewall Manager
-- can secure multiple AWS accounts and resources centrally
+- With Firewall Manager, you set up your protections just once and the service automatically applies them across your accounts and resources, even as you add new accounts and resources.
 
 #### GuardDuty
 - Guards your Network
 - Alerts you of any abnormal or malicious behaviour (through AI)
 - Updates a database of known malicious domains (through 3rd party feeds)
 - Monitors CloudTrail logs, VPC Flow Logs, and DNS logs
-- Findings appear in the GuardDuty dashboard.
+- Findings appear in the GuardDuty dashboard
   - CloudWatch Events can be used to trigger a Lambda function to proactively address a threat
 
 #### Macie
@@ -931,8 +940,9 @@ Amazon App Flow
 - Alerts can be sent to Amazon EventBridge and integrated with your event management system
 - Automate remediation actions using services such as Step Functions
 
-#### Inspector
-- Used to perform vulnerability scans on both EC2 instances and VPCs (run once or weekly)
+#### Amazon Inspector
+- Continually scans AWS workloads for software vulnerabilities and unintended network exposure
+- Perform vulnerability scans on both EC2 instances and VPCs (run once or weekly)
   - for EC2: host assessments
   - for VPC: network assessments 
 
@@ -994,17 +1004,17 @@ Amazon App Flow
   - automatically renew SSL certificates and rotate the old certificates with new certificates
 
 #### AWS Audit Manager
-- AWS Audit Manager helps you collect, review, and manage evidence to demonstrate that your usage of AWS services is in compliance.
+- AWS Audit Manager helps you collect, review, and manage evidence to demonstrate that your usage of AWS services is in compliance
 - continous auditing
 - automating auditing reports
 - HPAA or GDPR compliance
 
 #### AWS Artifact
-- AWS Artifact offers evidence to prove that the AWS Cloud infrastructure meets the compliance requirements.
+- AWS Artifact offers evidence to prove that the AWS Cloud infrastructure meets the compliance requirements
 - see a scenario question asks about audits and the need for compliance reports
 
 #### Amazon Cognito
-- Easily add user sign-up and authentication to your mobile and web apps.
+- Easily add user sign-up and authentication to your mobile and web apps
 - It also enables you to authenticate users through an external identity provider and provides temporary security credentials
 - User pool: user directories that provide sign-up and sign-in options for users of your application
 - Identity pool: allow your users access to other AWS services
@@ -1026,6 +1036,7 @@ Amazon App Flow
 - AWS manage all the hardware for you
 
 #### AWS Security Hub
+- Is a Cloud Security Posture Management service (CSPM) that performs security best practice checks, aggregates alerts, and enables automated remediation
 - single place to view all your security alerts across multiple AWS security services and AWS aacounts
 
 
@@ -1034,7 +1045,7 @@ Amazon App Flow
 - Create templates that describe all the AWS resources that you want >> CloudFormation takes care of provisioning and configuring those resources for you
 - Understand what the parameters, mappings, and resource sections of the CloudFormation templates do
   - The optional Parameters enable you to input custom values to your template each time you create or update a stack.
-  - The optional Mappings section matches a key to a corresponding set of named values >> if you want to set values based on a region, you can create a mapping that uses the region name as a key and contains the values you want to specify for each specific region.
+  - The optional Mappings section matches a key to a corresponding set of named values >> if you want to set values based on a region, you can create a mapping that uses the region name as a key and contains the values you want to specify for each specific region
   - The required Resources section declares the AWS resources that you want to include in the stack
 - Select answers that favor having resources that can be replaced at any time. Stateless is better than stateful
 - Mappings and Parameter Store can be useful to help make your templates more flexible. >> we never want hardcoded IDs (like AMI or snapshot IDs)
@@ -1055,9 +1066,9 @@ Amazon App Flow
 
 ### Caching
 #### CloudFront & Global Accelerator
-- AWS Global Accelerator and Amazon CloudFront are separate services that use the AWS global network and its edge locations
 - CloudFront improves performance for both cacheable content (such as images and videos) and dynamic content (such as API acceleration and dynamic site delivery)
-  - Only option to add HTTPS to a static website being hosted in an S3 bucket
+  - CloudFront is the only option to add HTTPS to a static website being hosted in an S3 bucket
+  - distribute private content to users with CloudFront Signed URL's
 - Global Accelerator improves performance for a wide range of applications over TCP or UDP by proxying packets at the edge to applications running in one or more AWS Regions
   - Gives you static IP addresses. Whenever the scenario talks about IP caching & reducing issues with customers caching old IP addresses >> think Global Accelerator
 
@@ -1111,61 +1122,62 @@ Amazon App Flow
   - to automate it use EventBridge to kick off a Lambda function to solve the problem for you
 
 #### AWS Control Tower
-- Offers the easiest way to set up and govern a secure, compliant, multi-account AWS environment based on best practices established by working with thousands of enterprises.
-- Extends the capabilities of AWS Organizations. To help keep your organizations and accounts from drift, which is divergence from best practices, AWS Control Tower applies controls (sometimes called guardrails).
+- Offers the easiest way to set up and govern a secure, compliant, multi-account AWS environment based on best practices established by working with thousands of enterprises
+- Extends the capabilities of AWS Organizations. To help keep your organizations and accounts from drift, which is divergence from best practices, AWS Control Tower applies controls (sometimes called guardrails)
+- AWS Control Tower can deploy a Log Archive account for centralized security logs and an Audit account for any SNS notifications around compliance violations.
 
 #### AWS License Manager
-- Makes it easier for you to manage your software licenses from software vendors centrally across AWS and your on-premises environments.
-- prevent license abuse and overcharges and reduce the risk of non-compliance and misreporting.
+- Makes it easier for you to manage your software licenses from software vendors centrally across AWS and your on-premises environments
+- prevent license abuse and overcharges and reduce the risk of non-compliance and misreporting
 
 #### AWS Service Catalog
-- Centrally manage commonly deployed IT services, and helps organizations achieve consistent governance and meet compliance requirements.
-- End users can quickly deploy only the approved IT services they need, following the constraints set by your organization.
+- Centrally manage commonly deployed IT services, and helps organizations achieve consistent governance and meet compliance requirements
+- End users can quickly deploy only the approved IT services they need, following the constraints set by your organization
 
 #### AWS Proton
 - Automated infrastructure as code provisioning and deployment of serverless and container-based applications
 - As an administrator, you create versioned service templates that define standardized infrastructure and deployment tooling
-- As an application developer, you can select from the available service templates to automate your application or service deployments.
+- As an application developer, you can select from the available service templates to automate your application or service deployments
 
 #### Well-Architected Tool
 - Document architectural decisions and their measurements against well-established industry best practices
-- The framework provides a consistent approach for measuring architectures and provides guidance for implementing designs that scale with your needs over time.
+- The framework provides a consistent approach for measuring architectures and provides guidance for implementing designs that scale with your needs over time
 
 #### AWS Health
 - Dashboard and service meant to provide notifications of both public and account-specific events within AWS
-- AWS Health provides ongoing visibility into your resource performance and the availability of your AWS services and accounts.
+- AWS Health provides ongoing visibility into your resource performance and the availability of your AWS services and accounts
 - Questions about service alerts or notifications of EC2 hardware maintenance reboots will leverage AWS Health in some manner
 
 #### AWS Personal Health Dashboard vs. Service Health Dashboard
-- AWS Personal Health Dashboard provides alerts and guidance for AWS events that might affect your environment.
+- AWS Personal Health Dashboard provides alerts and guidance for AWS events that might affect your environment
 - While the Service Health Dashboard shows the general status of AWS services, the Personal Health Dashboard provides proactive and transparent notifications about your specific AWS environment
 
 
 
 ### Migration
 #### AWS Snow Family
-- The AWS Snow Family helps customers who need to run operations in austere, non-data center environments, and in locations which lack consistent network connectivity.
+- The AWS Snow Family helps customers who need to run operations in austere, non-data center environments, and in locations which lack consistent network connectivity
 - Accelerate moving offline data or remote storage to the cloud
 
 ##### **AWS Snowmobile** 
-- Is a standard 45-foot shipping container filled with mass-storage AWS Snowball devices, together storing up to 100 PB (petabytes).
-- The container is pulled by a semi-trailer truck.
+- Is a standard 45-foot shipping container filled with mass-storage AWS Snowball devices, together storing up to 100 PB (petabytes)
+- The container is pulled by a semi-trailer truck
 
 ##### **Snowball Edge Compute Optimized** or **Snowball Edge Storage Optimized**
-- Accelerate application performance in disconnected, austere edge environments and run compute workloads with little or no connectivity.
-- Has no storage or processing power constraints, can be used to send terabytes of data to the cloud quickly.
+- Accelerate application performance in disconnected, austere edge environments and run compute workloads with little or no connectivity
+- Has no storage or processing power constraints, can be used to send terabytes of data to the cloud quickly
 
 ##### **AWS Snowcone**
 - AWS Snowcone is the most compact and portable device
 - Deploy ultra-portable data transfer and edge computing devices anywhere
-- Collect and process data, transfer with AWS DataSync, or ship the device with data to AWS for offline transfer.
+- Collect and process data, transfer with AWS DataSync, or ship the device with data to AWS for offline transfer
 
 #### Storage Gateway
-- Gives your applications on-premises and in-cloud access to virtually unlimited cloud storage.
+- Gives your applications on-premises and in-cloud access to virtually unlimited cloud storage
 - You can deploy Storage Gateway as a virtual machine (VM) within your VMware, Hyper-V, or Linux KVM virtual environment
-- Or as an Amazon EC2 instance within your Amazon Virtual Private Cloud (Amazon VPC).
-- **File Gateway** delivers on-premises file access to your Amazon S3 data
-- **Tape Gateway** virtualizes tape backup and archive workflows in AWS
+- Or as an Amazon EC2 instance within your Amazon Virtual Private Cloud (Amazon VPC)
+- **File Gateway** delivers on-premises file access to your Amazon S3 data (immediately retrievable)
+- **Tape Gateway** virtualizes tape backup and archive workflows in AWS (not immediately retrievable)
 - **Volume Gateway** expands on-premises block storage capacity
 
 #### DataSync and Transfer Family
@@ -1216,7 +1228,7 @@ Amazon App Flow
 
 ### Machine Learning
 #### Amazon Rekognition
-- Makes it simple to join your application’s image analysis and video analysis by using deep learning, highly scalable, and proven technology without having the ML tool.
+- Makes it simple to join your application’s image analysis and video analysis by using deep learning, highly scalable, and proven technology without having the ML tool
 - Content moderation using AI/ML
 
 #### Amazon SageMaker
@@ -1238,26 +1250,26 @@ Amazon App Flow
 - Analyze time-series data and make predictions based on that analysis
 
 #### Fraud Detector
-- Is a highly specialized AI tool built to **quickly identify potentially fraudulent activities** such as stolen debit cards, credit cards, and fake registrations.
+- Is a highly specialized AI tool built to **quickly identify potentially fraudulent activities** such as stolen debit cards, credit cards, and fake registrations
 
 #### Kendra
-- Amazon Kendra is an **intelligent search service** that uses natural language to find results accurately for your application and websites based on customer queries.
+- Amazon Kendra is an **intelligent search service** that uses natural language to find results accurately for your application and websites based on customer queries
 
 #### Lex
 - Permits developers to publish text chatbots or voice across multiple platforms like chat services, web apps, and mobile devices
 - This is the service that powers the logic behind A-Lex-a
 
 #### Amazon Polly
-- Is an advanced Text-to-Speech service that converts text into human-like text-to-speech voices.
-- Moreover, it offers lifelike voice outputs across Japanese, Korean, and Chinese languages.
-- This allows users to develop automated responses in the languages of their choice and convenience.
+- Is an advanced Text-to-Speech service that converts text into human-like text-to-speech voices
+- Moreover, it offers lifelike voice outputs across Japanese, Korean, and Chinese languages
+- This allows users to develop automated responses in the languages of their choice and convenience
 - Polly allows Alexa to speak back to you
 
 #### Transcribe
-- Is an automatic speech-to-text solution platform that uses ML models to convert audio to text and produce a review or read transcripts.
+- Is an automatic speech-to-text solution platform that uses ML models to convert audio to text and produce a review or read transcripts
 
 #### Textract
-- Is a deep learning-based service that automatically extracts text and handwriting, detecting data from scanned copies.
+- Is a deep learning-based service that automatically extracts text and handwriting, detecting data from scanned copies
 
 #### Translate
 - Is a neural machine translation service that allows you to translate a bulk amount of text from one language to another. It supports 75 languages
@@ -1268,4 +1280,4 @@ Amazon App Flow
 - Elastic Transcoder: convert your media files into an optimized format of a particular device
   - You simply create a transcoding “job” specifying the location of your source media file and how you want it transcoded
 - Amazon Kinesis Video Streams: video streaming at scale from millions of devices >> e.g. Ring (doorbell camera)
-  - It durably stores, encrypts, and indexes video data in your streams, and allows you to access your data through easy-to-use APIs. 
+  - It durably stores, encrypts, and indexes video data in your streams, and allows you to access your data through easy-to-use APIs 
