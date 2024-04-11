@@ -6,20 +6,15 @@ Don't give up when you don't understand a concept perfectly .. remember, doing i
 
 
 ## Where to study
-Udemy Course ($$$):
-https://nttdata.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03
+[Udemy Course ($$$)](https://nttdata.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03)
 
-Udemy Practice Exams ($$$):
-https://nttdata.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate
+[Udemy Practice Exams ($$$)](https://nttdata.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate)
 
-Cloud Guru Course with Hands-On labs ($$$):
-https://learn.acloud.guru/course/certified-solutions-architect-associate/overview 
+[Cloud Guru Course with Hands-On labs ($$$)](https://learn.acloud.guru/course/certified-solutions-architect-associate/overview )
 
-3D-Role-Playing-Game ($$$):
-https://aws.amazon.com/training/digital/aws-cloud-quest
+[3D-Role-Playing-Game ($$$)](https://aws.amazon.com/training/digital/aws-cloud-quest)
 
-AWS Training live on Twitch (free):
-https://aws.amazon.com/training/twitch/
+[AWS Training live on Twitch (free)](https://aws.amazon.com/training/twitch/)
 
 Good old Youtube (free):
 - https://www.youtube.com/@CloudVikings
@@ -28,36 +23,27 @@ Good old Youtube (free):
 
 
 ## Important links
-Exam Guide + Sample Questions:
-https://aws.amazon.com/certification/certified-solutions-architect-associate
+[Exam Guide + Sample Questions](https://aws.amazon.com/certification/certified-solutions-architect-associate)
 
-AWS Certification Paths:
-https://d1.awsstatic.com/training-and-certification/docs/AWS_certification_paths.pdf
+[AWS Certification Paths](https://d1.awsstatic.com/training-and-certification/docs/AWS_certification_paths.pdf)
 
-AWS Services Cheat Sheet:
-https://digitalcloud.training/category/aws-cheat-sheets/aws-solutions-architect-associate
+[AWS Services Cheat Sheet](https://digitalcloud.training/category/aws-cheat-sheets/aws-solutions-architect-associate)
 
-AWS Whitepaper & Guides:
-https://aws.amazon.com/whitepapers
+[AWS Whitepaper & Guides](https://aws.amazon.com/whitepapers)
 
-AWS Architecture Center:
-https://aws.amazon.com/architecture
+[AWS Architecture Center](https://aws.amazon.com/architecture)
 
-AWS Well-Architected Framework
-https://docs.aws.amazon.com/pdfs/wellarchitected/latest/framework/wellarchitected-framework.pdf
+[AWS Well-Architected Framework](https://docs.aws.amazon.com/pdfs/wellarchitected/latest/framework/wellarchitected-framework.pdf)
 
-AWS Global Infrastructure:
-https://aws.amazon.com/de/about-aws/global-infrastructure
+[AWS Global Infrastructure](https://aws.amazon.com/de/about-aws/global-infrastructure)
 
-Shared Responsibility Model:
-https://aws.amazon.com/compliance/shared-responsibility-model
+[Shared Responsibility Model](https://aws.amazon.com/compliance/shared-responsibility-model)
 
-Serverless on AWS:
-https://aws.amazon.com/serverless
+[Serverless on AWS](https://aws.amazon.com/serverless)
 
-AWS Support Plans:
-https://aws.amazon.com/premiumsupport/plans
+[AWS Support Plans](https://aws.amazon.com/premiumsupport/plans)
 
+[AWS Saving Plans](https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html)
 
 ## Get an extra 30 minutes for AWS Certification exams
 A 30-minute exam extension is available upon request to non-native English speakers when taking an exam in English. 
@@ -69,6 +55,15 @@ The accommodation, “ESL +30,” only needs to be requested once, prior to regi
 - Using the Accommodation Type dropdown, **select ESL +30 MINUTES**.
 - Select the **Create** button.
 
+
+## Rules/Tips for Remote AWS Exams
+[Pearson Vue System Test](https://home.pearsonvue.com/Clients/Amazon-Web-Services/Online-Proctored.aspx)
+- You can't wear hats or hoodies
+- Stay within webcam view
+- It's not allowed to enter or leave the testing environment
+- Don't mumble, talk around, or mouth anything as you take the exam
+- Drinks (better in an unlabeled container) are allowed, but no food or smoking etc.
+- Clean up your desk - only laptop, power cable, maybe a mouse and your water bottle is okay .. that's it
 
 
 ## Exam Tips
