@@ -437,6 +437,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - RDS is for online transaction processing workloads: small transactions, like customer orders, banking transactions, booking systems
 - RDS is not suitable for online analytics processing: better use Redshift for tasks like analyzing large amounts of data
 - With **IAM database authentication**, you use an authentication token when you connect to your DB instance - by using a token, you can avoid placing a password in your code
+- **Amazon RDS Proxy** effectively manages and optimizes database connections - It can enhance database scalability, reduce the load on the database, and mitigate performance issues during traffic spikes
 
 #### Read Replicas
 - **Scaling read performance:** used for scaling and not for disaster recovery
@@ -448,6 +449,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
   - Exact copy of your production database in another AZ
   - Used for disaster recovery
   - In the event of a failure, RDS for MySQL will automatically failover to the standby instance in a different AZ
+    - Amazon RDS simply flips the canonical name record (CNAME) for your DB instance to point at the standby, which is in turn promoted to become the new primary.
 - Read Replica
   - A read only copy of your primary database in the same AZ, cross AZ or cross region
   - Used to increase or scale read performance
@@ -562,12 +564,12 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 #### Network ACL
 - Default Network ACLs: coming automatically with VPC - by default all outbound and inbound traffic **is allowed**
 - create custom network ACLs - by default all outbound and inbound traffic **is denied**
+- Unlike SGs Network ACLs are stateless, responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa)
 - each subnet in VPC must be associated with a network ACL - if not the subnet will automatically use default network ACL
 - Block IP addresses using network ACLs, not Security groups
 - You can associate a network ACL with multiple subnets; but a subnet with only one network ACL
 - network ACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule
   - seperate inbound and outbound rules, each rule can either allow or deny traffic
-- Unlike SGs Network ACLs are stateless, responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa)
 - Each network ACL also includes a rule whose rule number is an asterisk (*)
   - This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied
   - You can't modify or remove this rule.
@@ -591,9 +593,13 @@ Good to know which common ports are used
 | 443  | HTTP Secure (HTTPS) - HTTP over TLS/SSL  |
 
 #### Direct Connect
-- connects directly to your data center
+- establish a dedicated network connection from your premises to AWS
 - useful for high-throughput workloads (e.g. lots of network traffic)
 - helpful when you need a stable and reliable secure connection
+
+#### AWS Client VPN
+- managed client-based VPN service that enables you to securely access your AWS resources or your on-premises network
+- a secure and private connection with IPsec and TLS.
 
 #### VPC Endpoints
 - when you want to connect AWS services without leaving the Amazon internal network
@@ -733,9 +739,9 @@ Good to know which common ports are used
 - Real time means Kinesis (big data section) >> dont pick CloudWatch Logs if it asks for a real-time logging service
 
 #### Visualizing Data and Monitoring Containers at Scale
-- Grafana: might be the best for visualization of container metrics
+- **AWS Managed Grafana:** might be the best for visualization of container metrics
   - AWS-managed service for correlation and visualization of container or IoT metrics
-- Amazon Managed Service for Prometheus
+- **AWS Managed Service for Prometheus**
   - use this service for any Kubernetes-based metrics monitoring at scale. Can be Amazon EKS cluster or self-managed cluster
 - Both are managed services >> AWS handles scaling and high availability for you
 
@@ -754,6 +760,7 @@ Good to know which common ports are used
 ##### Auto Scaling Group cooldown
 - After your Auto Scaling group launches or terminates instances, it waits for a cooldown period to end before any further scaling activities
 - By default, this cooldown period is set to **300 seconds (5 minutes)**. If needed, you can update this after the group is created
+- For the Default Termination Policy remember that the instance launched from the oldest launch configuration will be terminated first
 
 #### Scaling Databases
 - RDS has the most database scaling options
@@ -860,12 +867,17 @@ Amazon App Flow
 
 
 ### Serverless Architecture
+An example for a serverless architecture would be: **API Gateway < Lambda < DynamoDB < S3**
 #### AWS Lambda
 - Credentials: ensure you're attaching a role to the function 
 - Lambda triggers: S3, Kinesis, and EventBridge (formerly CloudWatch Events) are triggers
 - Functions should be short. You can allocate up to 10 GB of RAM and 15 minutes of runtime
 - AWS API call: Can be a trigger to kick off an EventBridge rule
   - faster than trying to scrape through CloudTrail
+
+#### AWS Serverless Application Repository
+- Is a managed repository for serverless applications and is deeply integrated with the AWS Lambda console
+- It enables teams, organizations, and individual developers to find, deploy, publish, share, store, and easily assemble serverless architectures.
 
 #### Containers and Images
 - Amazon EKS or EKS Anywhere:
@@ -1192,7 +1204,6 @@ Amazon App Flow
 - Is an organizational tool that gives you a way to organize all your steps
 - Discover applications for migration and modernization and outline strategies for execution
 - Utilizes guided migration templates and collaborative efforts across teams
-- **Database Migration Service:** Your go-to tool for any sort of database migration. It works for on-premises to the cloud, or for moving data between different RDS databases
 - **Server Migration Service:** The tool you'll want to use to migrate out of the data center and into AWS
 
 #### AWS Application Discovery Service
@@ -1201,8 +1212,12 @@ Amazon App Flow
 - Agentless discovery can be used via OVA file deployment to vSphere
 - Agent-based discovery collects detailed information of VMs on both Linux and Windows OS
 
-#### AWS Application Migration Service
-- Automated lift-and-shift service for migrating infrastructure to AWS
+### AWS Database Migration Service (AWS DMS)
+- Makes it possible to migrate relational databases, data warehouses, NoSQL databases, and other types of data stores.
+- It works for on-premises to the cloud, or for moving data between different RDS databases
+
+#### AWS Application Migration Service (AWS MGN)
+- Automated lift-and-shift service for migrating infrastructure to AWS (MGN should be used instead of Server Migration Service)
 - Replicates sorce servers into AWS for non-disruptive cutovers
 - it automatically converts and launches your servers on AWS
 - RTO of minutes and RPO of sub-seconds
