@@ -5,7 +5,7 @@ I'd like to start with some motivation: [Don't Shave That Yak!](https://seths.bl
 Don't give up when you don't understand a concept perfectly .. remember, doing it well now is much better than doing it perfectly later.
 
 
-## Where to study
+## Study Materials
 [Udemy Course ($$$)](https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03)
 
 [Udemy Practice Exams ($$$)](https://www.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate)
@@ -27,8 +27,6 @@ Good old Youtube (free):
 
 [AWS Certification Paths](https://d1.awsstatic.com/training-and-certification/docs/AWS_certification_paths.pdf)
 
-[AWS Services Cheat Sheet](https://digitalcloud.training/category/aws-cheat-sheets/aws-solutions-architect-associate)
-
 [AWS Whitepaper & Guides](https://aws.amazon.com/whitepapers)
 
 [AWS Architecture Center](https://aws.amazon.com/architecture)
@@ -44,6 +42,11 @@ Good old Youtube (free):
 [AWS Support Plans](https://aws.amazon.com/premiumsupport/plans)
 
 [AWS Saving Plans](https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html)
+
+[Comparison of AWS Services](https://tutorialsdojo.com/comparison-of-aws-services/)
+
+[AWS Services Cheat Sheet](https://digitalcloud.training/category/aws-cheat-sheets/aws-solutions-architect-associate)
+
 
 ## Get an extra 30 minutes for AWS Certification exams
 A 30-minute exam extension is available upon request to non-native English speakers when taking an exam in English. 
@@ -65,6 +68,238 @@ The accommodation, “ESL +30,” only needs to be requested once, prior to regi
 - Drinks (better in an unlabeled container) are allowed, but no food or smoking etc.
 - Clean up your desk - only laptop, power cable, maybe a mouse and your water bottle is okay .. that's it
 
+## Some Notes and common Exam Scenarios
+you should be able to differentiate services that belong to one category from another. Common comparisons include:
+- EC2 vs ECS vs Lambda
+- S3 vs EBS vs EFS
+- CloudFormation vs OpsWorks vs Elastic Beanstalk
+- SQS vs SNS vs SES vs MQ
+- Security Group vs nACLs
+- The different S3 storage types vs Glacier
+- RDS vs DynamoDB vs Elasticache
+- RDS engines vs Aurora
+
+**Domain 1: Design Resilient Architectures**
+| Scenario | Solution |
+| -------- | -------- |
+| Set up asynchronous data replication to another RDS DB instance hosted in another AWS Region | Create a Read Replica |
+| A parallel file system for “hot” (frequently accessed) data | Amazon FSx For Lustre |
+| Implement synchronous data replication across Availability Zones with automatic failover in Amazon RDS. | Enable Multi-AZ deployment in Amazon RDS. |
+| Needs a storage service to host “cold” (infrequently accessed) data | Amazon S3 Glacier |
+| Set up a relational database and a disaster recovery plan with an RPO of 1 second and RTO of less than 1 minute. | Use Amazon Aurora Global Database. |
+| Monitor database metrics and send email notifications if a specific threshold has been breached. | Create an SNS topic and add the topic in the CloudWatch alarm. |
+| Set up a DNS failover to a static website. | Use Route 53 with the failover option to a static S3 website bucket or CloudFront distribution. |
+| Implement an automated backup for all the EBS Volumes. | Use Amazon Data Lifecycle Manager to automate the creation of EBS snapshots. |
+| Monitor the available swap space of your EC2 instances | Install the CloudWatch agent and monitor the SwapUtilization metric. |
+| Implement a 90-day backup retention policy on Amazon Aurora. | Use AWS Backup |
+
+**Domain 2: Design High-Performing Architectures**
+| Scenario | Solution |
+| -------- | -------- |
+| Implement a fanout messaging. | Create an SNS topic with a message filtering policy and configure multiple SQS queues to subscribe to the topic. |
+| A database that has a read replication latency of less than 1 second. | Use Amazon Aurora with cross-region replicas. |
+| A specific type of Elastic Load Balancer that uses UDP as the protocol for communication between clients and thousands of game servers around the world. | Use Network Load Balancer for TCP/UDP protocols. |
+| Monitor the memory and disk space utilization of an EC2 instance. | Install Amazon CloudWatch agent on the instance. |
+| Retrieve a subset of data from a large CSV file stored in the S3 bucket. | Perform an S3 Select operation based on the bucket’s name and object’s key. |
+| Upload 1 TB file to an S3 bucket. | Use Amazon S3 multipart upload API to upload large objects in parts. |
+| Improve the performance of the application by reducing the response times from milliseconds to microseconds. | Use Amazon DynamoDB Accelerator (DAX) |
+| Retrieve the instance ID, public keys, and public IP address of an EC2 instance. | Access the URL: http://169.254.169.254/latest/meta-data/ using the EC2 instance. |
+| Route the internet traffic to the resources based on the location of the user. | Use Route 53 Geolocation Routing policy. |
+| A fully managed ETL (extract, transform, and load) service provided by Amazon Web Services. | AWS Glue |
+| A fully managed, petabyte-scale data warehouse service. | Amazon Redshift |
+
+**Domain 3: Design Secure Applications and Architectures**
+| Scenario | Solution |
+| -------- | -------- |
+| Encrypt EBS volumes restored from the unencrypted EBS snapshots | Copy the snapshot and enable encryption with a new symmetric CMK while creating an EBS volume using the snapshot. |
+| Limit the maximum number of requests from a single IP address. | Create a rate-based rule in AWS WAF and set the rate limit. |
+| Grant the bucket owner full access to all uploaded objects in the S3 bucket. | Create a bucket policy that requires users to set the object’s ACL to bucket-owner-full-control. |
+| Protect objects in the S3 bucket from accidental deletion or overwrite. | Enable versioning and MFA delete. |
+| Access resources on both on-premises and AWS using on-premises credentials that are stored in Active Directory. | Set up SAML 2.0-Based Federation by using a Microsoft Active Directory Federation Service. |
+| Secure the sensitive data stored in EBS volumes | Enable EBS Encryption |
+| Ensure that the data-in-transit and data-at-rest of the Amazon S3 bucket is always encrypted | Enable Amazon S3 Server-Side or use Client-Side Encryption |
+| Secure the web application by allowing multiple domains to serve SSL traffic over the same IP address. | Use AWS Certificate Manager to generate an SSL certificate. Associate the certificate to the CloudFront distribution and enable Server Name Indication (SNI). |
+| Control the access for several S3 buckets by using a gateway endpoint to allow access to trusted buckets. | Create an endpoint policy for trusted S3 buckets. |
+| Enforce strict compliance by tracking all the configuration changes made to any AWS services. | Set up a rule in AWS Config to identify compliant and non-compliant services. |
+| Provide short-lived access tokens that act as temporary security credentials to allow access to AWS resources. | Use AWS Security Token Service |
+| Encrypt and rotate all the database credentials, API keys, and other secrets on a regular basis. | Use AWS Secrets Manager and enable automatic rotation of credentials. |
+
+**Domain 4: Design Cost-Optimized Architectures**
+| Scenario | Solution |
+| -------- | -------- |
+| A cost-effective solution for over-provisioning of resources. | Configure a target tracking scaling in ASG. |
+| The application data is stored in a tape backup solution. The backup data must be preserved for up to 10 years. | Use AWS Storage Gateway to backup the data directly to Amazon S3 Glacier Deep Archive. |
+| Accelerate the transfer of historical records from on-premises to AWS over the Internet in a cost-effective manner. | Use AWS DataSync and select Amazon S3 Glacier Deep Archive as the destination. |
+| Globally deliver the static contents and media files to customers around the world with low latency. | Store the files in Amazon S3 and create a CloudFront distribution. Select the S3 bucket as the origin. |
+| An application must be hosted to two EC2 instances and should continuously run for three years. The CPU utilization of the EC2 instances is expected to be stable and predictable. | Deploy the application to a Reserved instance. |
+| Implement a cost-effective solution for S3 objects that are accessed less frequently. | Create an Amazon S3 lifecyle policy to move the objects to Amazon S3 Standard-IA. |
+| Minimize the data transfer costs between two EC2 instances. | Deploy the EC2 instances in the same Region. |
+| Import the SSL/TLS certificate of the application. | Import the certificate into AWS Certificate Manager or upload it to AWS IAM. |
+
+
+## In-Scope AWS Services
+This list is non-exhaustive and is subject to change. AWS offerings appear in categories that align with the offerings’ primary functions
+**Analytics:**
+- Amazon Athena
+- AWS Data Exchange
+- AWS Data Pipeline
+- Amazon EMR
+- AWS Glue
+- Amazon Kinesis
+- AWS Lake Formation
+- Amazon Managed Streaming for Apache Kafka (Amazon MSK)
+- Amazon OpenSearch Service
+- Amazon QuickSight
+- Amazon Redshift
+
+**Application Integration:**
+- Amazon AppFlow
+- AWS AppSync
+- Amazon EventBridge
+- Amazon MQ
+- Amazon Simple Notification Service (Amazon SNS)
+- Amazon Simple Queue Service (Amazon SQS)
+- AWS Step Functions
+
+**AWS Cost Management:**
+- AWS Budgets
+- AWS Cost and Usage Report
+- AWS Cost Explorer
+- Savings Plans
+
+**Compute:**
+- AWS Batch
+- Amazon EC2
+- Amazon EC2 Auto Scaling
+- AWS Elastic Beanstalk
+- AWS Outposts
+- AWS Serverless Application Repository
+- VMware Cloud on AWS
+- AWS Wavelength
+
+**Containers:**
+- Amazon ECS Anywhere
+- Amazon EKS Anywhere
+- Amazon EKS Distro
+- Amazon Elastic Container Registry (Amazon ECR)
+- Amazon Elastic Container Service (Amazon ECS)
+- Amazon Elastic Kubernetes Service (Amazon EKS)
+
+**Database:**
+- Amazon Aurora
+- Amazon Aurora Serverless
+- Amazon DocumentDB (with MongoDB compatibility)
+- Amazon DynamoDB
+- Amazon ElastiCache
+- Amazon Keyspaces (for Apache Cassandra)
+- Amazon Neptune
+- Amazon Quantum Ledger Database (Amazon QLDB)
+- Amazon RDS
+- Amazon Redshift
+
+**Developer Tools:**
+- AWS X-Ray
+
+**Front-End Web and Mobile:**
+- AWS Amplify
+- Amazon API Gateway
+- AWS Device Farm
+- Amazon Pinpoint
+
+**Machine Learning:**
+- Amazon Comprehend
+- Amazon Forecast
+- Amazon Fraud Detector
+- Amazon Kendra
+- Amazon Lex
+- Amazon Polly
+- Amazon Rekognition
+- Amazon SageMaker
+- Amazon Textract
+- Amazon Transcribe
+- Amazon Translate
+
+**Management and Governance:**
+- AWS Auto Scaling
+- AWS CloudFormation
+- AWS CloudTrail
+- Amazon CloudWatch
+- AWS Command Line Interface (AWS CLI)
+- AWS Compute Optimizer
+- AWS Config
+- AWS Control Tower
+- AWS Health Dashboard
+- AWS License Manager
+- Amazon Managed Grafana
+- Amazon Managed Service for Prometheus
+- AWS Management Console
+- AWS Organizations
+- AWS Proton
+- AWS Service Catalog
+- AWS Systems Manager
+- AWS Trusted Advisor
+- AWS Well-Architected Tool
+
+**Media Services:**
+- Amazon Elastic Transcoder
+- Amazon Kinesis Video Streams
+
+**Migration and Transfer:**
+- AWS Application Discovery Service
+- AWS Application Migration Service
+- AWS Database Migration Service (AWS DMS)
+- AWS DataSync
+- AWS Migration Hub
+- AWS Snow Family
+- AWS Transfer Family
+
+**Networking and Content Delivery:**
+- AWS Client VPN
+- Amazon CloudFront
+- AWS Direct Connect
+- Elastic Load Balancing (ELB)
+- AWS Global Accelerator
+- AWS PrivateLink
+- Amazon Route 53
+- AWS Site-to-Site VPN
+- AWS Transit Gateway
+- Amazon VPC
+
+**Security, Identity, and Compliance:**
+- AWS Artifact
+- AWS Audit Manager
+- AWS Certificate Manager (ACM)
+- AWS CloudHSM
+- Amazon Cognito
+- Amazon Detective
+- AWS Directory Service
+- AWS Firewall Manager
+- Amazon GuardDuty
+- AWS IAM Identity Center (AWS Single Sign-On)
+- AWS Identity and Access Management (IAM)
+- Amazon Inspector
+- AWS Key Management Service (AWS KMS)
+- Amazon Macie
+- AWS Network Firewall
+- AWS Resource Access Manager (AWS RAM)
+- AWS Secrets Manager
+- AWS Security Hub
+- AWS Shield
+- AWS WAF
+
+**Serverless:**
+- AWS AppSync
+- AWS Fargate
+- AWS Lambda
+
+**Storage:**
+- AWS Backup
+- Amazon Elastic Block Store (Amazon EBS)
+- Amazon Elastic File System (Amazon EFS)
+- Amazon FSx (for all types)
+- Amazon S3
+- Amazon S3 Glacier
+- AWS Storage Gateway
 
 ## Exam Tips
 
@@ -156,10 +391,11 @@ https://bucket-name.s3.Region.amazonaws.com/key-name
 - Can support MFA
 
 #### Storage Classes
-Head over to [S3 Storage Classes](https://aws.amazon.com/de/s3/storage-classes/)
+- Head over to [S3 Storage Classes](https://aws.amazon.com/de/s3/storage-classes/)
 
 #### Lifecycle Management with S3
 An S3 Lifecycle configuration is an XML file that consists of a set of rules with predefined actions that you want Amazon S3 to perform on objects during their lifetime.
+- [Supported lifecycle transitions](https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-transition-general-considerations.html) between storage classes 
 - Automates moving your objects between different storage tiers
 - Can be used in conjunction with versioning
 - Can be applied to current versions and previous versions
@@ -203,6 +439,7 @@ An S3 Lifecycle configuration is an XML file that consists of a set of rules wit
 - Use **multipart uploads** to increase performance when uploading files to S3 (for any file over 100 MB)
 - Use **S3 byte-range fetches** to increase performance when downloading files to S3
 - Use **Transfer Acceleration** to transfer from gigabytes to terabytes of data on a regular basis across continents
+  - you pay only for transfers that are accelerated
 
 #### Backing up Data with S3 Replication
 - You can replicate objects from one bucket to another
@@ -240,6 +477,10 @@ EC2 is like a VM, hosted in AWS instead of your own data center
 - A physical EC2 server dedicated for your use
 - Great if you have serverbound licenses to reuse or compliance requirements
 - Note: Any question that talks about special licensing requirements
+
+#### EC2 Instance Store
+- Provides temporary block-level storage for your instance
+- This storage is located on disks that are physically attached to the host computer
 
 #### AWS Command Line Interface (CLI)
 - **Least Privilege:** Always give your users the minimum amount of access required to do their job
@@ -294,6 +535,10 @@ echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
   - Or if you need to do an OS-bypass.
   - Choose EFA if you see a scenario question mentioning HPC or ML
 
+#### EC2 Fleet
+- EC2 Fleet is a powerful service that simplifies the process of provisioning and managing multiple EC2 instances
+- In a single API call, a fleet can launch multiple instance types across multiple AZs, using the Spot Instance, On-Demand Instance, Reserved Instance, and Savings Plan purchasing options together
+
 #### Types of Placement Groups
 To meet the needs of your workload, you can launch a group of interdependent EC2 instances into a placement group to influence their placement
 - **Cluster Placement Groups**
@@ -322,6 +567,13 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
   - this is for large deployments, so these are 42U form factor racks that will go inside a data center
 - **AWS Outpost servers**
   - for smaller deployments, so this will be things like putting in a 1U server inside a retail shop, for example
+
+#### Amazon Machine Images (AMI):
+- An AMI is just a blueprint for an EC2 instance and provides the information required to launch an instance
+- Launch multiple instances from one AMI when you need same configuration
+- You can copy an AMI within the same AWS Region or to different AWS Regions
+  - create EBS Snapshot from instance >> create AMI from Snapshot >> copy AMI into preferred AWS Region
+    - When the new AMI is copied from Region A into Region B, it automatically creates a snapshot in Region B because AMIs are based on the underlying snapshots. Further, an instance is created from this AMI in Region B. Hence, **we have 1 Amazon EC2 instance, 1 AMI and 1 snapshot in Region B**
 
 ### Elastic Block Storage (EBS)
 - Provides scalable, high-performance block storage resources that can be used with Amazon EC2 instances.
@@ -371,15 +623,6 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
 - Snapshots can be shared between AWS accounts as well as between regions - first you need to copy that snapshot to the target region
 - Resize EBS Volumes on the fly as well as changing the volume types
 
-#### Amazon Machine Images (AMI): EBS vs. Instance Store
-- An AMI is just a blueprint for an EC2 instance
-- Instance store volumes are sometimes called ephemeral/short-lived storage
-- Instance store volumes cannot be stopped. If underlying host fails you will loose your data
-- EBS-backed instances can be stoppped. You will not loose data
-- both EBS and instance store can be rebooted without loosing data
-- By default both root volumes will be deleted on termination
-  - with EBS volumes you can tell AWS to keep the root device volume
-
 #### Protecting EBS Volumes with encryption
 - **Data at rest** is encrypted inside the volume
 - All snapshots are encrypted
@@ -399,6 +642,14 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
 - Available for Windows, Amazon Linux 2 AMI, and Ubuntu
 - Instances can't be hibernated for more than **60 days**
 - Available for On-Demand instances and Reserved Instances
+
+#### EBS vs. Instance Store
+- Instance store volumes are sometimes called ephemeral/short-lived storage
+- Instance store volumes cannot be stopped. If underlying host fails you will loose your data
+- EBS-backed instances can be stoppped. You will not loose data
+- both EBS and instance store can be rebooted without loosing data
+- By default both root volumes will be deleted on termination
+  - with EBS volumes you can tell AWS to keep the root device volume
 
 
 ### Elastic File System (EFS)
@@ -445,6 +696,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - **Multiple read replicas supported:** 5 read replicas for each DB instance allowed (MySQL, MariaDB, PostgreSQL, Oracle, SQL Server)
 
 #### Multi-AZ vs. Read Replicas
+**Multi-AZ follows synchronous replication** and spans at least two AZs within a single region. **Read replicas follow asynchronous replication** and can be within an AZ, Cross-AZ, or Cross-Region
 - Multi-AZ
   - Exact copy of your production database in another AZ
   - Used for disaster recovery
@@ -459,8 +711,11 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Compatible with MySQL, PostgreSQL
 - 2 copies of your data are contained in each AZ, with a minimum of 3 AZs >> 6 copies of your data
 - Share Aurora snapshots with other aws accounts
-- 3 types or read replicas: Aurora replicas (automated failover available), MySQL replicas, and PostgreSQL replicas
 - Aurora has automated backups turned on by default
+- 3 types or read replicas: Aurora replicas (automated failover available), MySQL replicas, and PostgreSQL replicas
+  - each Read Replica is associated with a priority tier (0-15)
+  - In the event of a failover, Aurora will promote the Read Replica that has the highest priority (the lowest numbered tier)
+  - If two or more Aurora Replicas share the same priority, then Amazon RDS promotes the replica that is largest in size (e.g.: Tier-1 (32 terabytes))
 
 ##### Auroroa Serverless
 - Provides a relatively, simple, cost-effective option for infrequent, intermittent, or unpredictable workloads
@@ -596,6 +851,7 @@ Good to know which common ports are used
 - establish a dedicated network connection from your premises to AWS
 - useful for high-throughput workloads (e.g. lots of network traffic)
 - helpful when you need a stable and reliable secure connection
+- **Use VPN** when you need to provide an **encrypted connection** between a data center and AWS Cloud
 
 #### AWS Client VPN
 - managed client-based VPN service that enables you to securely access your AWS resources or your on-premises network
@@ -750,12 +1006,26 @@ Good to know which common ports are used
 #### Auto Scaling
 - is only for EC2
   - No other service can be scaled using Auto Scaling
-- Whenever possible, favor solutions that are predictive rather than reactive or scheduled scaling
+- Whenever possible, **favor solutions that are predictive** rather than reactive or scheduled scaling
 - Avoid long provisioning times by putting everything in an AMI (all dependencies and code). This is better than using user data whenever possible
   - good when you need those instances to respond to a workload that has just hit your architecture
 - Make sure you're spreading your Auto Scaling groups over multiple AZs
 - Steady state groups: is an auto scaling group that has min, max, and desired capacity. e.g. min 1, max 1, desired capacity 1. when the instance fails then auto scaling will automatically recover that architecture and provide a new instance
 - Make sure you enable health checks from Load Balancers. If instances dont pass the health check they will be terminated by the auto scaling group. (that is not default behaviour)
+
+##### Scaling strategies
+**Dynamic Scaling:**
+- Target Tracking Scaling — This automatically scales capacity to keep a metric like CPU utilization at or near a target value. This maintains optimal performance.
+- Step Scaling — Increase or decrease capacity by a set amount based on CloudWatch alarms. For example, add 2 instances if CPU > 80% for 5 minutes.
+- Simple/Step Scaling — Increase or decrease by a fixed number of instances. Simple but not as responsive as target tracking.
+
+**Predictive Scaling:**
+- Use machine learning to analyze historical data and forecast upcoming capacity needs. Scale ahead of predicted traffic changes.
+- Great for cyclical changes like daily or seasonal patterns. Requires historical data.
+
+**Scheduled Scaling:**
+- Increase or decrease capacity on a set schedule, like weekdays vs weekends.
+- Scale on a regular, fixed schedule for predictable fluctuations.
 
 ##### Auto Scaling Group cooldown
 - After your Auto Scaling group launches or terminates instances, it waits for a cooldown period to end before any further scaling activities
@@ -778,7 +1048,7 @@ Good to know which common ports are used
 - It's important to understand the standard values for all of the SQS settings
 - Messages stored in SQS can only persist **up to 14 days**
 - If message ordering is important, make sure to select SQS FIFO queues
-  - FIFO has a batch limit of 3,000 messages per second
+  - FIFO has a batch limit of 3,000 messages per second (300 API calls, each with a batch of 10 messages)
 
 #### Amazon SNS
 - proactive notifications: any time a question asks about email, text, or any type of push-based notification, think of SNS
@@ -942,7 +1212,8 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 - With Firewall Manager, you set up your protections just once and the service automatically applies them across your accounts and resources, even as you add new accounts and resources.
 
 #### GuardDuty
-- Guards your Network
+- Guards your Network andanalyzes tens of billions of events across multiple AWS data sources
+  - such as AWS CloudTrail events, Amazon VPC Flow Logs, and DNS logs
 - Alerts you of any abnormal or malicious behaviour (through AI)
 - Updates a database of known malicious domains (through 3rd party feeds)
 - Monitors CloudTrail logs, VPC Flow Logs, and DNS logs
@@ -975,6 +1246,7 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
     - Use the key policy: full scope of access defined in a single document
     - Use IAM policies in combination with the key policy: lets you manage all the permissions in IAM
     - Use grants in combination with the key policy: allow access to CMK in the key policy, as well as allow users to delegate their access to others
+  - Deleting a key: AWS KMS enforces a waiting period. To delete a KMS key in AWS KMS you schedule key deletion (from 7 days up to 30 days (default))
 
 #### KMS vs. CloudHSM
 - KMS
@@ -1084,6 +1356,7 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 - CloudFront improves performance for both cacheable content (such as images and videos) and dynamic content (such as API acceleration and dynamic site delivery)
   - CloudFront is the only option to add HTTPS to a static website being hosted in an S3 bucket
   - distribute private content to users with CloudFront Signed URL's
+  - By design, delivering data out of Amazon CloudFront can be more cost-effective than delivering it from S3 directly to your users
 - Global Accelerator improves performance for a wide range of applications over TCP or UDP by proxying packets at the edge to applications running in one or more AWS Regions
   - Gives you static IP addresses. Whenever the scenario talks about IP caching & reducing issues with customers caching old IP addresses >> think Global Accelerator
 
