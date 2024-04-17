@@ -47,6 +47,8 @@ Good old Youtube (free):
 
 [AWS Services Cheat Sheet](https://digitalcloud.training/category/aws-cheat-sheets/aws-solutions-architect-associate)
 
+[AWS Networking Fundamentals](https://www.youtube.com/watch?v=hiKPPy584Mg&ab_channel=AmazonWebServices)
+
 
 ## Get an extra 30 minutes for AWS Certification exams
 A 30-minute exam extension is available upon request to non-native English speakers when taking an exam in English. 
@@ -373,6 +375,8 @@ https://bucket-name.s3.Region.amazonaws.com/key-name
 - **Value:** The data itself, which is made up of a sequence of bytes
 - **Version ID:** Allows you to store multiple versions of the same object
 - **Metadata:** Data about the data you are storing (e.g. content-type, last-modified)
+- The **S3 sync command** uses the CopyObject APIs to copy objects between Amazon S3 buckets
+  - The sync command on a versioned bucket copies only the current version of the object
 
 #### Securing Your Bucket with S3
 - **Buckets are private by default:** On creation the bucket is private including all objects within it. You need to specifically allow public access on both the bucket **and** its objects
@@ -506,6 +510,8 @@ You can change the security groups for an instance when the instance is in the r
 #### User Data and Metadata
 - User data are simply bootstrap scripts: **a script that runs when the EC2-Instance first runs**
   - It passes user data to the instance and can be used to install applications (like web servers and databases), as well as do updates and more
+  - By default, user data **runs only during the boot cycle** when you first launch an instance
+  - By default, scripts entered as user data are **executed with root user** privileges
 - Metadata is data about your EC2 instances
   - You can use bootstrap scripts (user data) to access metadata
 
@@ -689,6 +695,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - RDS is not suitable for online analytics processing: better use Redshift for tasks like analyzing large amounts of data
 - With **IAM database authentication**, you use an authentication token when you connect to your DB instance - by using a token, you can avoid placing a password in your code
 - **Amazon RDS Proxy** effectively manages and optimizes database connections - It can enhance database scalability, reduce the load on the database, and mitigate performance issues during traffic spikes
+- Amazon RDS Custom for Oracle: customers can customize their database server host and operating system and apply special patches or change database software settings
 
 #### Read Replicas
 - **Scaling read performance:** used for scaling and not for disaster recovery
@@ -795,6 +802,12 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Consists of internet gateways, route tables, network access control lists, subnets, and security groups
 - Includes a default security group >> **You can't delete this group**, however, you can change the group's rules
 
+#### VPC Sharing
+- allows multiple AWS accounts to create their application resources into shared and centrally-managed Amazon VPCs
+- the account that owns the VPC (owner) shares one or more subnets with other accounts (participants) that belong to the same organization from AWS Organizations
+- Participants cannot view, modify, or delete resources that belong to other participants or the VPC owner
+- This reduces the number of VPCs that you create and manage while using separate accounts for billing and access control
+
 #### Subnet basics
 - 1 subnet is always in 1 AZ
 - Public subnet – The subnet has a direct route to an internet gateway. Resources in a public subnet can access the public internet
@@ -812,20 +825,22 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
   - solve problem: one NAT gateway for each AZ - configure routing to ensure resources use the NAT in the same AZ
 
 #### Security Groups
-- SG are statful - if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules
+- Operates at instance level
+- SG are stateful - if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules
   - responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules
 - Remember you can't delete default security group, however, you can change the group's rules
 
 #### Network ACL
+- Operates at subnet level
 - Default Network ACLs: coming automatically with VPC - by default all outbound and inbound traffic **is allowed**
-- create custom network ACLs - by default all outbound and inbound traffic **is denied**
+- Create custom network ACLs - by default all outbound and inbound traffic **is denied**
 - Unlike SGs Network ACLs are stateless, responses to allowed inbound traffic are subject to the rules for outbound traffic (and vice versa)
-- each subnet in VPC must be associated with a network ACL - if not the subnet will automatically use default network ACL
+- Each subnet in VPC must be associated with a network ACL - if not the subnet will automatically use default network ACL
 - Block IP addresses using network ACLs, not Security groups
 - You can associate a network ACL with multiple subnets; but a subnet with only one network ACL
-- network ACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule
+- NACLs contain a numbered list of rules that are evaluated in order, starting with the lowest numbered rule
   - seperate inbound and outbound rules, each rule can either allow or deny traffic
-- Each network ACL also includes a rule whose rule number is an asterisk (*)
+- Each NACL also includes a rule whose rule number is an asterisk (*)
   - This rule ensures that if a packet doesn't match any of the other numbered rules, it's denied
   - You can't modify or remove this rule.
 
@@ -852,6 +867,8 @@ Good to know which common ports are used
 - useful for high-throughput workloads (e.g. lots of network traffic)
 - helpful when you need a stable and reliable secure connection
 - **Use VPN** when you need to provide an **encrypted connection** between a data center and AWS Cloud
+- To establish a private connection between your VPC and an API, you can create an **interface VPC endpoint**
+  - Direct Connect provides three types of virtual interfaces: public, private, and transit
 
 #### AWS Client VPN
 - managed client-based VPN service that enables you to securely access your AWS resources or your on-premises network
@@ -1013,6 +1030,11 @@ Good to know which common ports are used
 - Steady state groups: is an auto scaling group that has min, max, and desired capacity. e.g. min 1, max 1, desired capacity 1. when the instance fails then auto scaling will automatically recover that architecture and provide a new instance
 - Make sure you enable health checks from Load Balancers. If instances dont pass the health check they will be terminated by the auto scaling group. (that is not default behaviour)
 
+##### Launch configuration
+- Is an instance configuration template that an Auto Scaling group uses to launch Amazon EC2 instances
+- Include the ID of the AMI, the instance type, a key pair, one or more security groups, and a block device mapping
+- It is **not possible** to modify a launch configuration once it is created
+
 ##### Scaling strategies
 **Dynamic Scaling:**
 - Target Tracking Scaling — This automatically scales capacity to keep a metric like CPU utilization at or near a target value. This maintains optimal performance.
@@ -1048,7 +1070,9 @@ Good to know which common ports are used
 - It's important to understand the standard values for all of the SQS settings
 - Messages stored in SQS can only persist **up to 14 days**
 - If message ordering is important, make sure to select SQS FIFO queues
+  - FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent
   - FIFO has a batch limit of 3,000 messages per second (300 API calls, each with a batch of 10 messages)
+  - The name of a FIFO queue must end with the .fifo suffix
 
 #### Amazon SNS
 - proactive notifications: any time a question asks about email, text, or any type of push-based notification, think of SNS
@@ -1059,7 +1083,7 @@ Good to know which common ports are used
 - SES is NOT a supported destination for S3 event notifications
 
 #### API Gateway
-- no need for an in depth understanding
+- throttles requests to your API using the token bucket algorithm, where a token counts for a request
 - it acts as a secure front door to external communication coming into your environment
 
 #### AWS Batch
@@ -1359,6 +1383,7 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
   - By design, delivering data out of Amazon CloudFront can be more cost-effective than delivering it from S3 directly to your users
 - Global Accelerator improves performance for a wide range of applications over TCP or UDP by proxying packets at the edge to applications running in one or more AWS Regions
   - Gives you static IP addresses. Whenever the scenario talks about IP caching & reducing issues with customers caching old IP addresses >> think Global Accelerator
+  - good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP
 
 #### Amazon DynamoDB Accelerator (DAX)
 - is a fully managed, highly available caching service built for Amazon DynamoDB
@@ -1488,6 +1513,7 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 ### AWS Database Migration Service (AWS DMS)
 - Makes it possible to migrate relational databases, data warehouses, NoSQL databases, and other types of data stores.
 - It works for on-premises to the cloud, or for moving data between different RDS databases
+- for example: AWS DMS supports Amazon S3 as the source and Kinesis as the target, so data stored in an S3 bucket is streamed to Kinesis
 
 #### AWS Application Migration Service (AWS MGN)
 - Automated lift-and-shift service for migrating infrastructure to AWS (MGN should be used instead of Server Migration Service)
