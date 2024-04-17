@@ -543,6 +543,7 @@ echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
 
 #### EC2 Fleet
 - EC2 Fleet is a powerful service that simplifies the process of provisioning and managing multiple EC2 instances
+- The fleet request must include a launch template that defines the information that the fleet needs to launch an instance
 - In a single API call, a fleet can launch multiple instance types across multiple AZs, using the Spot Instance, On-Demand Instance, Reserved Instance, and Savings Plan purchasing options together
 
 #### Types of Placement Groups
@@ -667,6 +668,11 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Data is stored across multiple AZs within a region
 - Read-after-write consistency
 
+#### EFS Performance modes
+- **General Purpose mode** has the lowest per-operation latency and is the default performance mode for file systems
+- **Max I/O mode** is a previous generation performance type that is designed for highly parallelized workloads
+- Note: Due to the higher per-operation latencies with Max I/O, **it`s recommend using General Purpose performance mode for all file systems**
+
 #### FSx
 - Amazon FSx for Windows: When you need centralized storage for Windows-based applications, such as SharePoint, Microsoft SQL Server, Workspaces or any other native Microsoft application
 - Amazon FSx for Lustre: When you need high-speed, high-capacity distributed storage. For applications that do high performance computing (HPC), financial modeling, etc. Remember that FSx for Lustre can store data directly on S3
@@ -695,7 +701,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - RDS is not suitable for online analytics processing: better use Redshift for tasks like analyzing large amounts of data
 - With **IAM database authentication**, you use an authentication token when you connect to your DB instance - by using a token, you can avoid placing a password in your code
 - **Amazon RDS Proxy** effectively manages and optimizes database connections - It can enhance database scalability, reduce the load on the database, and mitigate performance issues during traffic spikes
-- Amazon RDS Custom for Oracle: customers can customize their database server host and operating system and apply special patches or change database software settings
+- **Amazon RDS Custom for Oracle:** customers can customize their database server host and operating system and apply special patches or change database software settings
 
 #### Read Replicas
 - **Scaling read performance:** used for scaling and not for disaster recovery
@@ -801,6 +807,9 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Think of a VPC as a logical data center
 - Consists of internet gateways, route tables, network access control lists, subnets, and security groups
 - Includes a default security group >> **You can't delete this group**, however, you can change the group's rules
+- To use private hosted zones in a VPC, you must set the following settings to true:
+  - enableDnsHostnames
+  - enableDnsSupport
 
 #### VPC Sharing
 - allows multiple AWS accounts to create their application resources into shared and centrally-managed Amazon VPCs
@@ -1032,8 +1041,13 @@ Good to know which common ports are used
 
 ##### Launch configuration
 - Is an instance configuration template that an Auto Scaling group uses to launch Amazon EC2 instances
+- If you only need to **launch a few instances with fixed settings**
 - Include the ID of the AMI, the instance type, a key pair, one or more security groups, and a block device mapping
 - It is **not possible** to modify a launch configuration once it is created
+
+##### Launch template
+- Is similar to a launch configuration, in that it specifies instance configuration information
+- If you need to **launch an entire fleet of instances with consistent configurations**
 
 ##### Scaling strategies
 **Dynamic Scaling:**
