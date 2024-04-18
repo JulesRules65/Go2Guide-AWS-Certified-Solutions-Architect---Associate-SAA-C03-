@@ -9,6 +9,7 @@ Don't give up when you don't understand a concept perfectly .. remember, doing i
 [Udemy Course ($$$)](https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03)
 
 [Udemy Practice Exams ($$$)](https://www.udemy.com/course/practice-exams-aws-certified-solutions-architect-associate)
+- Exams from Stephane are way more difficult than exams on Cloud Guru - but a good way to get familiar with the type of questions and answers in the real exam
 
 [Cloud Guru Course with Hands-On labs ($$$)](https://learn.acloud.guru/course/certified-solutions-architect-associate/overview )
 
@@ -71,7 +72,7 @@ The accommodation, “ESL +30,” only needs to be requested once, prior to regi
 - Clean up your desk - only laptop, power cable, maybe a mouse and your water bottle is okay .. that's it
 
 ## Some Notes and common Exam Scenarios
-you should be able to differentiate services that belong to one category from another. Common comparisons include:
+You should be able to differentiate services that belong to one category from another. Common comparisons include:
 - EC2 vs ECS vs Lambda
 - S3 vs EBS vs EFS
 - CloudFormation vs OpsWorks vs Elastic Beanstalk
@@ -188,8 +189,8 @@ This list is non-exhaustive and is subject to change. AWS offerings appear in ca
 - Amazon Elastic Kubernetes Service (Amazon EKS)
 
 **Database:**
-- Amazon Aurora
-- Amazon Aurora Serverless
+- Amazon 
+- Amazon  Serverless
 - Amazon DocumentDB (with MongoDB compatibility)
 - Amazon DynamoDB
 - Amazon ElastiCache
@@ -371,6 +372,7 @@ https://bucket-name.s3.Region.amazonaws.com/key-name
 - Note: Successful CLI or API object uploads will generate an HTTP 200 status code
 
 #### S3 Object Tips
+- By default, an Amazon S3 object is owned by the AWS account that uploaded it. So the Amazon S3 bucket owner will not implicitly have access to the objects
 - **Key:** The object name (e.g. test.png)
 - **Value:** The data itself, which is made up of a sequence of bytes
 - **Version ID:** Allows you to store multiple versions of the same object
@@ -482,6 +484,17 @@ EC2 is like a VM, hosted in AWS instead of your own data center
 - Great if you have serverbound licenses to reuse or compliance requirements
 - Note: Any question that talks about special licensing requirements
 
+#### Change the tenancy of an instance
+Each Amazon EC2 instance that you launch into a VPC has a tenancy attribute. This attribute has the following values:
+| Tenancy Value  | Description |
+| ------------- | ------------- |
+| default  | Your Instance runs on shared hardware  |
+| dedicated  | Your Instance runs on single-tenant hardware |
+| host  | Your Instance runs on a Dedicated Host, which is an isolated server with configurations that you can control  |
+
+- You can change the tenancy of an instance from dedicated to host, or from host to dedicated
+- If a Launch Template Tenancy is set to shared (default) and the VPC Tenancy is set to dedicated, then the instances have dedicated tenancy
+
 #### EC2 Instance Store
 - Provides temporary block-level storage for your instance
 - This storage is located on disks that are physically attached to the host computer
@@ -549,14 +562,17 @@ echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
 #### Types of Placement Groups
 To meet the needs of your workload, you can launch a group of interdependent EC2 instances into a placement group to influence their placement
 - **Cluster Placement Groups**
+  - Packs instances close together inside an Availability Zone
   - Low network latency, high network throughput
   - **can't** span multiple AZs
   - AWS recommends homogenous instances
 - **Spread Placement Groups**
+  - Strictly places a small group of instances across distinct underlying hardware to reduce correlated failures
   - Individual critical EC2 instances
   - can span multiple AZs
 - **Partition Placement Groups**
-  - Multiple EC2 instances: HDFS, HBase, and Cassandra
+  - Spreads your instances across logical partitions such that groups of instances in one partition do not share the underlying hardware with groups of instances in different partitions
+  - Typically used by large distributed and replicated workloads, such as Hadoop, Cassandra, and Kafka
   - can span multiple AZs
   - can't be merged
 - Only certain types of instances can be launched in a placement group (compute, GPU, memory and storage optimized)
@@ -578,9 +594,12 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
 #### Amazon Machine Images (AMI):
 - An AMI is just a blueprint for an EC2 instance and provides the information required to launch an instance
 - Launch multiple instances from one AMI when you need same configuration
+- You can share an Amazon Machine Image (AMI) with another AWS account
 - You can copy an AMI within the same AWS Region or to different AWS Regions
   - create EBS Snapshot from instance >> create AMI from Snapshot >> copy AMI into preferred AWS Region
-    - When the new AMI is copied from Region A into Region B, it automatically creates a snapshot in Region B because AMIs are based on the underlying snapshots. Further, an instance is created from this AMI in Region B. Hence, **we have 1 Amazon EC2 instance, 1 AMI and 1 snapshot in Region B**
+    - When the new AMI is copied from Region A into Region B, it automatically creates a snapshot in Region B because AMIs are based on the underlying snapshots.
+    - Further, an instance is created from this AMI in Region B. Hence, **we have 1 Amazon EC2 instance, 1 AMI and 1 snapshot in Region B**
+- Copying an AMI backed by an encrypted snapshot result in an encrypted target snapshot (cannot result in an unencrypted snapshot)
 
 ### Elastic Block Storage (EBS)
 - Provides scalable, high-performance block storage resources that can be used with Amazon EC2 instances.
@@ -667,6 +686,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Can support thousands of concurrent NFS connections
 - Data is stored across multiple AZs within a region
 - Read-after-write consistency
+- Use EFS Infrequent Access (EFS IA) if you want to automatically save on storage costs for files that are less frequently accessed
 
 #### EFS Performance modes
 - **General Purpose mode** has the lowest per-operation latency and is the default performance mode for file systems
@@ -696,14 +716,15 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 
 ### Databases
 ####  Amazon Relational Database Service (RDS)
-- **Database Types:** SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, and Amazon Aurora
+- **Database Types:** SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, and Amazon 
 - RDS is for online transaction processing workloads: small transactions, like customer orders, banking transactions, booking systems
-- RDS is not suitable for online analytics processing: better use Redshift for tasks like analyzing large amounts of data
+- RDS is not suitable for online  processing: better use Redshift for tasks like analyzing large amounts of data
 - With **IAM database authentication**, you use an authentication token when you connect to your DB instance - by using a token, you can avoid placing a password in your code
 - **Amazon RDS Proxy** effectively manages and optimizes database connections - It can enhance database scalability, reduce the load on the database, and mitigate performance issues during traffic spikes
 - **Amazon RDS Custom for Oracle:** customers can customize their database server host and operating system and apply special patches or change database software settings
 
 #### Read Replicas
+- There are data transfer charges for replicating data across AWS Regions
 - **Scaling read performance:** used for scaling and not for disaster recovery
 - **Requires automatic backup:** automatic backup must be anabled in order to deploy a read replica
 - **Multiple read replicas supported:** 5 read replicas for each DB instance allowed (MySQL, MariaDB, PostgreSQL, Oracle, SQL Server)
@@ -833,6 +854,12 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - If resources in multiple Azs share a NAT gateway and one AZ is down, the respurces in the other AZ lose internet access
   - solve problem: one NAT gateway for each AZ - configure routing to ensure resources use the NAT in the same AZ
 
+#### NAT Instances
+- Can be used as a bastion server (unlike gateway)
+- Can be associated with a Security Group (unlike gateway)
+- Supports port forwarding (unlike gateway)
+- It's recommend to use NAT gateways because they provide better availability and bandwidth and require less effort on your part to administer.
+
 #### Security Groups
 - Operates at instance level
 - SG are stateful - if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules
@@ -872,31 +899,31 @@ Good to know which common ports are used
 | 443  | HTTP Secure (HTTPS) - HTTP over TLS/SSL  |
 
 #### Direct Connect
-- establish a dedicated network connection from your premises to AWS
-- useful for high-throughput workloads (e.g. lots of network traffic)
-- helpful when you need a stable and reliable secure connection
+- Establish a dedicated network connection from your premises to AWS
+- Useful for high-throughput workloads (e.g. lots of network traffic)
+- Helpful when you need a stable and reliable secure connection
 - **Use VPN** when you need to provide an **encrypted connection** between a data center and AWS Cloud
 - To establish a private connection between your VPC and an API, you can create an **interface VPC endpoint**
-  - Direct Connect provides three types of virtual interfaces: public, private, and transit
+  - Direct Connect provides three types of virtual interfaces (VIF): public, private, and transit
 
 #### AWS Client VPN
-- managed client-based VPN service that enables you to securely access your AWS resources or your on-premises network
-- a secure and private connection with IPsec and TLS.
+- Managed client-based VPN service that enables you to securely access your AWS resources or your on-premises network
+- A secure and private connection with IPsec and TLS.
 
 #### VPC Endpoints
-- when you want to connect AWS services without leaving the Amazon internal network
+- When you want to connect AWS services without leaving the Amazon internal network
 - 2 types of VPC endpoints: Interface endpoints and gateway endpoints
-- gateway endpoints: support s3 and DynamoDB
+- Gateway endpoints: support s3 and DynamoDB
 
 #### VPC Peering
-- connect 1 VPC with another via a direct network route
-- instances behave as if they were on the same private network
-- peer VPC with other AWS accounts as well with other VPCs in the same account
-- peering is in a star configuration (e.g. 1 central VPC peers with 4 others)
-- you can peer between regions
+- Connect 1 VPC with another via a direct network route
+- Instances behave as if they were on the same private network
+- Peer VPC with other AWS accounts as well with other VPCs in the same account
+- Peering is in a star configuration (e.g. 1 central VPC peers with 4 others)
+- You can peer between regions
 
 #### AWS PrivateLink
-- peering a vpc to hundreds, or thousands of customer VPCs
+- Peering a vpc to hundreds, or thousands of customer VPCs
 - Doesn't require VPC peering, no route tables, NAT gateways, internet gateways etc.
 - Requires a Network Load Balancer on the service VPC and an ENI on the customer VPC
 
@@ -908,28 +935,35 @@ Good to know which common ports are used
 - **Supports IP multicast** (not supported by any other service)
 
 #### VPN Hub
-- simplifying VPN network topology
+- Simplifying VPN network topology
 - Use this approach if you have multiple branch offices and existing internet connections and would like to implement a convenient, potentially low-cost hub-and-spoke model for primary or backup connectivity between these remote offices
 
 #### AWS Managed VPN
-- lets you reuse existing VPN equipment and processes and also use existing internet connections
+- Lets you reuse existing VPN equipment and processes and also use existing internet connections
 
 #### AWS Wavelength
-- mobile edge computing
+- Mobile edge computing
 - 5G, increasing application speed at edge using mobile networks
 
 
 ### Route 53
 - A reliable and cost-effective way to route end users to Internet applications
 - difference between alias record and a CNAME
-  - alias record: are unique to AWS. Translate your naked domain/subdomain name to a resource
-  - CNAME: only allows you to translate a sub domain name from one to another
-- always choose alias record over a CNAME when you see it in the exam
+  - alias record: are unique to AWS. Translate your naked domain/subdomain name to a resource (e.g.: create an alias record for covid19survey.com that routes traffic to www.covid19survey.com)
+  - CNAME: only allows you to translate a sub domain name from one to another (e.g.: create a CNAME record that redirects queries from app.covid19survey.com to app.covid19survey.net)
+- Amazon Route 53 doesn't charge for alias queries to AWS resources but Route 53 does charge for CNAME queries
+
+#### Route 53 Resolver
+By default, Amazon Route 53 Resolver automatically answers DNS queries for local VPC domain names for Amazon EC2 instances. You can integrate DNS resolution between Resolver and DNS resolvers on your on-premises network by configuring forwarding rules.
+- DNS queries for resources in the AWS VPC from the on-premises network:
+  - create an inbound endpoint on Amazon Route 53 Resolver and then DNS resolvers on the on-premises network can forward DNS queries to Amazon Route 53 Resolver via this endpoint
+- DNS queries for any resources in the on-premises network from the AWS VPC:
+  - create an outbound endpoint on Amazon Route 53 Resolver and then Amazon Route 53 Resolver can conditionally forward queries to resolvers on the on-premises network via this endpoint
 
 #### DNS Record Types
   - SOA Records
   - CNAME Records
-  - NS Records
+  - NS Records (An NS record identifies the name servers for the hosted zone)
   - A Records
 
 #### Routing Policies
@@ -993,17 +1027,14 @@ Good to know which common ports are used
 - 504 error means the gateway has timed out
 - IPv4 address >> look for the X-Forwarded-For header
 
-#### Sticky Sessions
+##### Sticky Sessions
 - enable your users to stick to the same EC2 instance. Useful when storing information locally
 - scenario-based question: you remove an EC2 instance from a pool. but the load balancer continues to direct traffic to that EC2 instance
   - solve this by disabling sticky sessions
-- sticky sessions can be enabled for ALB as well but the traffic will be sent atthe target group level
+- sticky sessions can be enabled for ALB as well but the traffic will be sent at the target group level
 
-#### Deregistration Delay/Connection Draining
-- Enable Deregistration Delay
-  - Keep existing connections open if the EC2 instance becomes unhealthy
-- Disable Deregistration Delay
-  - Do this if you want your LB to immediately close connections to the instances that are de.registering or have become unhealthy
+##### Connection Draining
+Use it to ensure that ELB stops sending requests to instances that are de-registering or unhealthy while keeping the existing connections open
 
 
 ### Monitoring
@@ -1070,6 +1101,7 @@ Good to know which common ports are used
 
 #### Scaling Databases
 - RDS has the most database scaling options
+  - If your workload is unpredictable, you can enable storage autoscaling for an Amazon RDS DB instance
 - Horizontal scaling is usually preferred over vertical
   - Read replicas are your friend >> especially for read-heavy workloads
 - DynamoDB scaling comes down to access patterns
@@ -1081,15 +1113,24 @@ Good to know which common ports are used
 #### Amazon SQS
 - **SQS** can duplicate messages >> check for misconfigured visibility timeouts
 - Queues aren't bi-directional: if you need communication to return to the instance that sent the message, you'll need a second queue
-- It's important to understand the standard values for all of the SQS settings
 - Messages stored in SQS can only persist **up to 14 days**
-- If message ordering is important, make sure to select SQS FIFO queues
-  - FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent
-  - FIFO has a batch limit of 3,000 messages per second (300 API calls, each with a batch of 10 messages)
-  - The name of a FIFO queue must end with the .fifo suffix
+- Amazon SQS provides short polling and long polling to receive messages from a queue.
+  - By default, queues use short polling (sends the response right away)
+  - With long polling, Amazon SQS sends a response after it collects at least one available message (can reduce costs because you can reduce the number of empty receives)
+- **Delay queues** let you postpone the delivery of new messages to a queue for several seconds
+- **Visibility timeout** is a period during which Amazon SQS prevents other consumers from receiving and processing a given message
+- **Dead-letter queues** can be used by other queues (source queues) as a target for messages that can't be processed (consumed) successfully
+
+
+##### SQS FIFO
+If message ordering is important, make sure to select SQS FIFO queues
+- FIFO queues are designed to guarantee that messages are processed exactly once, in the exact order that they are sent
+- FIFO has a batch limit of 3,000 messages per second (300 API calls, each with a batch of 10 messages)
+- The name of a FIFO queue must end with the .fifo suffix
+
 
 #### Amazon SNS
-- proactive notifications: any time a question asks about email, text, or any type of push-based notification, think of SNS
+- Proactive notifications: any time a question asks about email, text, or any type of push-based notification, think of SNS
 - CloudWatch works perfectly with SNS: get notifications from a CloudWatch alarm via e-mail etc.
 
 #### Amazon SES
@@ -1124,24 +1165,26 @@ Amazon App Flow
 ### Big Data
 #### Redshift
 - Redshift is a relational database, but no replacement for RDS in traditional applications
-- Meant for large scale data warehousing and data analytics
+- Meant for large scale data warehousing and data 
 - supports single-AZ and multi-AZs
 
 #### Amazon Elastic MapReduce (Amazon EMR)
 - managed cluster platform that simplifies running big data frameworks, such as Apache Hadoop and Apache Spark
 - EMR also lets you transform and move large amounts of data into and out of other AWS data stores and databases, such as Amazon S3 and Amazon DynamoDB.
-- is made up of EC2 instances: you can employ your standard EC2 instance cost-saving measures
-- offers several built-in open-source tools to process vast amounts of big data
+- Is made up of EC2 instances: you can employ your standard EC2 instance cost-saving measures
+- Offers several built-in open-source tools to process vast amounts of big data
 
 #### Amazon Kinesis
-- only service with real-time response
+- Only service with real-time response
 - SQS and Kinesis can both be queues
   - SQS is easier and simpler
   - Kinesis is faster and can store data for up to a year
 - understand the difference between Data Firehose and Data Streams
   - Data Firehose >> near realtime
+    - easiest way to load streaming data into data stores and analytics tools
   - Data Streams >> real-time
-  - Video Streams >> more easily and securely stream video from connected devices to AWS for analytics, ML, playback, and other processing
+    - when you need the ability for multiple applications to consume the same stream concurrently
+  - Video Streams >> more easily and securely stream video from connected devices to AWS for , ML, playback, and other processing
 
 #### Amazon Athena & AWS Glue
 - Athena: Serverless SQL
@@ -1161,17 +1204,22 @@ Amazon App Flow
 - OpenSearch is primarily used for analyzing log files and various documents, especially within an ETL process
 
 #### Data Pipeline
-- is a managed ETL service within AWS
-- implement automated workflows for movement and transformation of your data
-- integrates with storage services and compute services
+- Is a managed ETL service within AWS
+- Implement automated workflows for movement and transformation of your data
+- Integrates with storage services and compute services
 - Data-driven and task-dependent ETL workloads are a perfect use case
 
 #### Amazon Managed Streaming for Apache Kafka (MSK)
 - Managed service for building and running Apache Kafka streaming applications
 - The service handles control plane operations for you (creation, updating, and deletion)
 - You manage data plane operations
-- push broker logs to CloudWatch, S3, or Kinesis Data Firehose
+- Push broker logs to CloudWatch, S3, or Kinesis Data Firehose
 - API calls are all logged to CloudTrail
+
+##### AWS Lake Formation
+- Helps you centrally govern, secure, and globally share data for analytics and machine learning
+- Helps you break down data silos and combine different types of structured and unstructured data into a centralized repository
+- Manage fine-grained access control for your data lake data on Amazon S3 and its metadata in AWS Glue Data Catalog
 
 
 ### Serverless Architecture
@@ -1323,9 +1371,9 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 - You got AWS managed policies and then you've got your customer managed policies as well
 
 #### AWS Certificate Manager
-- used to integrate SSl certificates
+- Used to integrate SSl certificates
 - AWS Certificate Manager integrates with Elastic Load Balancing, CloudFront, and API Gateway
-- its a free service that saves time and money
+- Its a free service that saves time and money
   - automatically renew SSL certificates and rotate the old certificates with new certificates
 
 #### AWS Audit Manager
@@ -1375,6 +1423,11 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 - Select answers that favor having resources that can be replaced at any time. Stateless is better than stateful
 - Mappings and Parameter Store can be useful to help make your templates more flexible. >> we never want hardcoded IDs (like AMI or snapshot IDs)
 
+##### CloudFormation StackSet
+- A stack set lets you create stacks in AWS accounts across regions by using a single AWS CloudFormation template
+- Extends the functionality of stacks by enabling you to create, update, or delete stacks across multiple accounts and regions with a single operation
+- use the template as the basis for provisioning stacks into selected target accounts of an "AWS Organization" across specified regions
+
 #### Elastic Beanstalk
 - A simple solution to bundle and deploy applications
 - Quickly deploy and manage applications in the AWS Cloud without having to learn about the infrastructure
@@ -1390,13 +1443,21 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 
 
 ### Caching
-#### CloudFront & Global Accelerator
-- CloudFront improves performance for both cacheable content (such as images and videos) and dynamic content (such as API acceleration and dynamic site delivery)
-  - CloudFront is the only option to add HTTPS to a static website being hosted in an S3 bucket
-  - distribute private content to users with CloudFront Signed URL's
-  - By design, delivering data out of Amazon CloudFront can be more cost-effective than delivering it from S3 directly to your users
-- Global Accelerator improves performance for a wide range of applications over TCP or UDP by proxying packets at the edge to applications running in one or more AWS Regions
-  - Gives you static IP addresses. Whenever the scenario talks about IP caching & reducing issues with customers caching old IP addresses >> think Global Accelerator
+#### CloudFront
+CloudFront improves performance for both cacheable content (such as images and videos) and dynamic content (such as API acceleration and dynamic site delivery)
+- CloudFront is the only option to add HTTPS to a static website being hosted in an S3 bucket
+- Distribute private content to users with CloudFront Signed URL's
+- By design, delivering data out of Amazon CloudFront can be more cost-effective than delivering it from S3 directly to your users
+- Provides two ways to send authenticated requests to an Amazon S3 origin:
+  - origin access control (OAC) >> recommended by AWS
+  - origin access identity (OAI)
+
+##### S3 Transfer Acceleration or Amazon CloudFront’s PUT/POST
+- If you have objects that are smaller than 1 GB or if the data set is less than 1 GB in size, you should consider using Amazon CloudFront's PUT/POST commands for optimal performance.
+
+#### Global Accelerator
+Improves performance for a wide range of applications over TCP or UDP by proxying packets at the edge to applications running in one or more AWS Regions
+  - Gives you two global static anycast IPs to simplify traffic management. Whenever the scenario talks about IP caching & reducing issues with customers caching old IP addresses >> think Global Accelerator
   - good fit for non-HTTP use cases, such as gaming (UDP), IoT (MQTT), or Voice over IP
 
 #### Amazon DynamoDB Accelerator (DAX)
@@ -1405,7 +1466,9 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 - DAX is suitable for read-intensive workloads
 
 #### Amazon ElastiCache
-- Is a serverless, Redis- and Memcached-compatible caching service delivering real-time, cost-optimized performance for modern applications.
+- Is a serverless, Redis- and Memcached-compatible caching service delivering real-time, cost-optimized performance for modern applications
+- Popular choice for real-time use cases like Caching, Session Stores, Gaming, Geospatial Services, Real-Time Analytics, and Queuing
+- Significantly improve latency and throughput for many **read-heavy application workloads** or **compute-intensive workloads**
 - Redis has more features than Memcached
   - Redis can be a persistent data store or as a cache, whereas Memcached is just a cache
   - Redis supports Backups
@@ -1419,6 +1482,11 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 - Service control policies (SCPs) >> They are the only way to restrict what the root account can do
 - Centralized logs >> CloudTrail offers support to log everything into a single AWS account
 - Isolate workloads into seperate accounts >> more layers of security and controls
+
+##### Moving an account between Organizations
+1. Remove the member account from the old organization (making the account standalone)
+2. Send an invite to the member account from the new Organization
+3. Accept the invite to the new organization from the member account
 
 #### AWS Config
 - Provides a detailed view of the configuration of AWS resources in your AWS account and how they were configured in the past
@@ -1510,7 +1578,7 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 #### DataSync and Transfer Family
 - DataSync is an agent-based solution that excels at one-time migrations of file shares into AWS
   - EFS and FSx are both viable locations for DataSync to transfer content into
-- Transfer Family allows you to use legacy file transfer protocols to  give older applications the ability to read and write from S3
+- Transfer Family allows you to use legacy file transfer protocols to give older applications the ability to read and write from S3
 
 #### Migration Hub
 - Is an organizational tool that gives you a way to organize all your steps
