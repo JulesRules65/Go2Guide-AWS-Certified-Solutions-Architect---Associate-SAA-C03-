@@ -344,6 +344,15 @@ You might give some users administrative permissions to perform all actions in I
 }
 ```
 
+#### Trust policy
+A JSON policy document in which you define the principals that you trust to assume the role. A role trust policy is a required resource-based policy that is attached to a role in IAM. The principals that you can specify in the trust policy include users, roles, accounts, and services.
+
+#### Permissions policy
+A permissions document in JSON format in which you define what actions and resources the role can use. The document is written according to the rules of the IAM policy language.
+
+#### Permissions boundary
+An advanced feature in which you use policies to limit the maximum permissions that an identity-based policy can grant to a role. You cannot apply a permissions boundary to a service-linked role. For more information, see Permissions boundaries for IAM entities.
+
 #### Permanent IAM Credentials
 - **IAM is universal/global:** It does'nt apply to regions at this time
 - **The Root Account:** This is the account created when you first set up ypur AWS account and it has complete admin access - **do not** use it to log in day to day
@@ -371,6 +380,7 @@ https://bucket-name.s3.Region.amazonaws.com/key-name
 ```
 - Note: Successful CLI or API object uploads will generate an HTTP 200 status code
 
+
 #### S3 Object Tips
 - By default, an Amazon S3 object is owned by the AWS account that uploaded it. So the Amazon S3 bucket owner will not implicitly have access to the objects
 - **Key:** The object name (e.g. test.png)
@@ -379,15 +389,23 @@ https://bucket-name.s3.Region.amazonaws.com/key-name
 - **Metadata:** Data about the data you are storing (e.g. content-type, last-modified)
 - The **S3 sync command** uses the CopyObject APIs to copy objects between Amazon S3 buckets
   - The sync command on a versioned bucket copies only the current version of the object
-
+- Use S3 batch replication to copy objects across Amazon S3 buckets in another Region using S3 console
 #### Securing Your Bucket with S3
 - **Buckets are private by default:** On creation the bucket is private including all objects within it. You need to specifically allow public access on both the bucket **and** its objects
 - **Object Access Control List's (ACLs):** To make individual objects public
 - **Bucket policies:** make entire buckets public using bucket policies (Best Practice)
-
+- Amazon S3 always returns the latest version of the object
+- Using the Range HTTP header in a GET Object request, you can fetch a byte-range from an object, transferring only the specified portion
+  - This helps you achieve higher aggregate throughput versus a single whole-object request
+  - 
 #### Hosting a Static Website
 - You can use s3 to host **static content only** (not dynamic)
 - **Automatic scaling:** S3 scales automatically with demand
+- The following shows static website URl:
+```
+http://bucket-name.s3-website.Region.amazonaws.com
+http://bucket-name.s3-website-Region.amazonaws.com
+```
 
 #### Versioning Objects
 - All Versions of an object are stored in S3. This includes all writes and even if you delete an objects
@@ -600,10 +618,12 @@ With that you can extend AWS to your data center - just think of AWS Outposts as
     - When the new AMI is copied from Region A into Region B, it automatically creates a snapshot in Region B because AMIs are based on the underlying snapshots.
     - Further, an instance is created from this AMI in Region B. Hence, **we have 1 Amazon EC2 instance, 1 AMI and 1 snapshot in Region B**
 - Copying an AMI backed by an encrypted snapshot result in an encrypted target snapshot (cannot result in an unencrypted snapshot)
+- If you create an AMI from an instance, the data on its instance store volumes isn't preserved
 
 ### Elastic Block Storage (EBS)
 - Provides scalable, high-performance block storage resources that can be used with Amazon EC2 instances.
 - You can use **Amazon Data Lifecycle Manager** to automate the creation, retention, and deletion of EBS snapshots and EBS-backed AMIs.
+- EBS volumes are Availability Zone (AZ) locked
   
 #### SSD Volumes
 - gp2: General purpose SSD
@@ -722,6 +742,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - With **IAM database authentication**, you use an authentication token when you connect to your DB instance - by using a token, you can avoid placing a password in your code
 - **Amazon RDS Proxy** effectively manages and optimizes database connections - It can enhance database scalability, reduce the load on the database, and mitigate performance issues during traffic spikes
 - **Amazon RDS Custom for Oracle:** customers can customize their database server host and operating system and apply special patches or change database software settings
+- Amazon RDS applies OS updates by performing **maintenance on the standby**, then **promoting the standby to primary** and finally performing **maintenance on the old primary**, which **becomes the new standby**
 
 #### Read Replicas
 - There are data transfer charges for replicating data across AWS Regions
@@ -736,6 +757,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
   - Used for disaster recovery
   - In the event of a failure, RDS for MySQL will automatically failover to the standby instance in a different AZ
     - Amazon RDS simply flips the canonical name record (CNAME) for your DB instance to point at the standby, which is in turn promoted to become the new primary.
+    - There is no such thing like Cross-region AZ
 - Read Replica
   - A read only copy of your primary database in the same AZ, cross AZ or cross region
   - Used to increase or scale read performance
@@ -750,6 +772,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
   - each Read Replica is associated with a priority tier (0-15)
   - In the event of a failover, Aurora will promote the Read Replica that has the highest priority (the lowest numbered tier)
   - If two or more Aurora Replicas share the same priority, then Amazon RDS promotes the replica that is largest in size (e.g.: Tier-1 (32 terabytes))
+- Use database cloning to create multiple clones of the production database and use each clone as a test database
 
 ##### Auroroa Serverless
 - Provides a relatively, simple, cost-effective option for infrequent, intermittent, or unpredictable workloads
@@ -764,6 +787,7 @@ Highly scalable shared storage using Network File Sharing. Distributed, highly r
 - Difference between eventually & strongly
   - Eventually: Consistency across all copies of data is usually reached within seconds. Best read perfromance
   - Strongly: returns a result that reflects all writes that received a successful response prior to the read
+- By default, all Amazon DynamoDB tables are encrypted using AWS owned keys, which do not write to AWS CloudTrail logs
 
 ##### DynamoDB as a document database?
 - A key-value store holds for each key a single value. Arguably, if the value can be an entire document, you can call this database a "document store".
@@ -905,6 +929,7 @@ Good to know which common ports are used
 - **Use VPN** when you need to provide an **encrypted connection** between a data center and AWS Cloud
 - To establish a private connection between your VPC and an API, you can create an **interface VPC endpoint**
   - Direct Connect provides three types of virtual interfaces (VIF): public, private, and transit
+- Direct Connect involves significant monetary investment and takes more than a month to set up
 
 #### AWS Client VPN
 - Managed client-based VPN service that enables you to securely access your AWS resources or your on-premises network
@@ -1001,6 +1026,10 @@ By default, Amazon Route 53 Resolver automatically answers DNS queries for local
 - If you want your domain to point to a new ELB, then wait for the time-to-live (TTL) to expire. After that, the record will be updated and users get redirected to the new ELB
   - TTL: Your computer has cached the previous DNS request, but once the TTL has expired it will get the new address.
 
+#### Bastion host
+- Including bastion hosts in your VPC environment enables you to securely connect to your Linux instances without exposing your environment to the Internet
+- Bastion Hosts are using the SSH protocol, which is a TCP based protocol on port 22
+
 #### Application Load Balancer
 - Layer 7
 - intelligent load balencing
@@ -1010,12 +1039,19 @@ By default, Amazon Route 53 Resolver automatically answers DNS queries for local
 - Limitations: Application Load Balancers only support HTTP and HTTPS
 - HTTPS: To use HTTPS listener, you must deploy at least one SSL/TLS server certificate.
 - **Only** the ALB can support path-based and host-based routing
+- By default, cross-zone load balancing is enabled for Application Load Balancer
+- Dynamic port mapping: makes it easier to run multiple tasks on the same Amazon ECS service on an Amazon ECS cluster.
+
+
 
 #### Network Load Balancer
 - Layer 4
+- low latency and high throughput workloads that involve scaling to millions of requests per second
+- supports TCP traffic
 - use where you need extreme performance
-- other use cases are where you need protocols not supported by ALB
+- other use cases are where you need protocols not supported by ALB (e.g. TCP)
 - decrypt traffic, but you will need to install the certificate on the load balancer
+- By default, cross-zone load balancing disabled for Network Load Balancer
 
 #### Gateway Load Balancer
 - Layer 3
@@ -1120,7 +1156,7 @@ Use it to ensure that ELB stops sending requests to instances that are de-regist
 - **Delay queues** let you postpone the delivery of new messages to a queue for several seconds
 - **Visibility timeout** is a period during which Amazon SQS prevents other consumers from receiving and processing a given message
 - **Dead-letter queues** can be used by other queues (source queues) as a target for messages that can't be processed (consumed) successfully
-
+- **Temporary queues** To better support short-lived, lightweight messaging destinations. Save development time and deployment costs when using common message patterns such as request-response
 
 ##### SQS FIFO
 If message ordering is important, make sure to select SQS FIFO queues
@@ -1165,8 +1201,10 @@ Amazon App Flow
 ### Big Data
 #### Redshift
 - Redshift is a relational database, but no replacement for RDS in traditional applications
+- fully-managed petabyte-scale cloud-based data warehouse
 - Meant for large scale data warehousing and data 
 - supports single-AZ and multi-AZs
+- Redshift Spectrum: efficiently query and retrieve structured and semistructured data from files in Amazon S3
 
 #### Amazon Elastic MapReduce (Amazon EMR)
 - managed cluster platform that simplifies running big data frameworks, such as Apache Hadoop and Apache Spark
@@ -1270,6 +1308,13 @@ An example for a serverless architecture would be: **API Gateway < Lambda < Dyna
 
 
 ### Security
+#### Disaster Recovery
+- **Backup and restore** – RPO/RTO: Hours - involves backing up your systems and restoring them from backup in case of disaster.
+- **Pilot light** – RPO/RTO: 10s of minutes - involves running core services in standby mode, and triggering additional services as needed in case of disaster.
+- **Warm standby** – RPO/RTO: Minutes - involves running a full backup system in standby mode, with live data replicated from the production environment.
+- **Multi-site active/active** – RPO/RTO: Real-time - running a full, secondary production system, ready to serve traffic when needed.
+
+
 #### DDoS & AWS Shield
 - Distributed Denial of Service (DDoS) attack attempts to make your website/app unavailable to your end users
   - Layer 4 attacks such as SYN floods or NTP aplification attacks
@@ -1451,6 +1496,7 @@ CloudFront improves performance for both cacheable content (such as images and v
 - Provides two ways to send authenticated requests to an Amazon S3 origin:
   - origin access control (OAC) >> recommended by AWS
   - origin access identity (OAI)
+- CloudFront signed cookies allow you to control who can access your content when you don't want to change your current URLs or when you want to provide access to multiple restricted files
 
 ##### S3 Transfer Acceleration or Amazon CloudFront’s PUT/POST
 - If you have objects that are smaller than 1 GB or if the data set is less than 1 GB in size, you should consider using Amazon CloudFront's PUT/POST commands for optimal performance.
@@ -1469,9 +1515,10 @@ Improves performance for a wide range of applications over TCP or UDP by proxyin
 - Is a serverless, Redis- and Memcached-compatible caching service delivering real-time, cost-optimized performance for modern applications
 - Popular choice for real-time use cases like Caching, Session Stores, Gaming, Geospatial Services, Real-Time Analytics, and Queuing
 - Significantly improve latency and throughput for many **read-heavy application workloads** or **compute-intensive workloads**
-- Redis has more features than Memcached
+- Redis has more features than Memcached - [Read More](https://aws.amazon.com/elasticache/redis-vs-memcached/)
   - Redis can be a persistent data store or as a cache, whereas Memcached is just a cache
   - Redis supports Backups
+  - Memcached supports Multi-threading
 
 
 ### Governance
