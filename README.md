@@ -1030,6 +1030,12 @@ By default, Amazon Route 53 Resolver automatically answers DNS queries for local
 - Including bastion hosts in your VPC environment enables you to securely connect to your Linux instances without exposing your environment to the Internet
 - Bastion Hosts are using the SSH protocol, which is a TCP based protocol on port 22
 
+#### Cross-zone load balancing
+- When cross-zone load balancing is enabled, each load balancer node distributes traffic across the registered targets in all enabled Availability Zones.
+  - Therefore, one instance in Availability Zone A receives 20% traffic and four instances in Availability Zone B receive 20% traffic each. 
+- When cross-zone load balancing is disabled, each load balancer node distributes traffic only across the registered targets in its Availability Zone.
+  - Therefore, one instance in Availability Zone A receives 50% traffic and four instances in Availability Zone B receive 12.5% traffic each.
+
 #### Application Load Balancer
 - Layer 7
 - intelligent load balencing
@@ -1041,8 +1047,6 @@ By default, Amazon Route 53 Resolver automatically answers DNS queries for local
 - **Only** the ALB can support path-based and host-based routing
 - By default, cross-zone load balancing is enabled for Application Load Balancer
 - Dynamic port mapping: makes it easier to run multiple tasks on the same Amazon ECS service on an Amazon ECS cluster.
-
-
 
 #### Network Load Balancer
 - Layer 4
