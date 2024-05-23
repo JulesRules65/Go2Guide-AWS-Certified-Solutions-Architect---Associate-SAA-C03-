@@ -71,6 +71,15 @@ The accommodation, “ESL +30,” only needs to be requested once, prior to regi
 - Drinks (better in an unlabeled container) are allowed, but no food or smoking etc.
 - Clean up your desk - only laptop, power cable, maybe a mouse and your water bottle is okay .. that's it
 
+
+## My thoughts
+- I utilized both ACG (aCloudGuru) and a Udemy course by Stephane Maarek. I was really satisfied with Maarek's course and its practice exams, but on the other hand, ACG was quite poor. Initially, I started with ACG and consistently scored above 90% on its final exams. This made me suspect that the actual AWS exam wouldn't be that easy or have such simple scenarios.
+- Then I switched to Maarek's materials, which presented a significant difference in scenario complexity and question difficulty. This forced me to study some services in greater detail. I even thought Maarek's questions might be more difficult than the actual exam.
+- Ultimately, during the exam, I found it to be more complicated than I expected.
+
+### topics/services
+- Aurora, RDS, DynamoDB, Redshift, Athena, lake formation, cost explorer, saving plans, ECS, EKS, Transit Gateway, VPV Peering, Route 53, S3, EBS, EFS, SQS, SNS, Lambda, MQ, ALB, NLB, WAF, Shield, Config, Secrets Manager, CloudFront, Global Accelerator, API Gateway, Kinesis, Database migration, elastic beanstalk, multi az, private/public subnet routes & internet traffic
+
 ## Some Notes and common Exam Scenarios
 You should be able to differentiate services that belong to one category from another. Common comparisons include:
 - EC2 vs ECS vs Lambda
